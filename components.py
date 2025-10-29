@@ -28,9 +28,7 @@ def initialise_board(size=8):
     #returns board array
     return(board)
 
-
-
-#COME BACK TO THIS 
+# defines function that prints an ASCII repr. of the board
 def print_board(board):
 
     #creates initial array for ascii board
@@ -38,9 +36,9 @@ def print_board(board):
     for row in board:
         ascii_spaces=[]
         for space in row:
-            #converts each character in current space to its ascii value
+            #converts each character in current space to its ASCII value
             ascii_tile=[ord(char) for char in space]
-            # joins each ascii character together to print an ascii repr. of the whole tile
+            # joins each ascii character together to form an ascii repr. of the whole tile
             ascii_tile=int(''.join(map(str,ascii_tile)))
             ascii_spaces.append(ascii_tile)
         ascii_board.append(ascii_spaces)
