@@ -29,19 +29,30 @@ def initialise_board(size=8):
     return(board)
 
 
+
+#COME BACK TO THIS 
 def print_board(board):
     ascii_board=[]
     for row in board:
         ascii_spaces=[]
         for space in row:
-            ascii_spaces.append(ascii(space))
+            space=str(space)
+            ascii_spaces.append(ord(char) for char in space)
         ascii_board.append(ascii_spaces)
     for row in ascii_board:
         print(row)
 
 
+def legal_move(colour,coord,board):
+    if colour=="Light":    
+        oppositeColour="-Dark"
+    else:
+        oppositeColour="Light"
+    if board[coord[0]-1,coord[1]]== oppositeColour:
+
+
+
 board=initialise_board()
-print_board(board)
     
 
     
