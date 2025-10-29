@@ -36,23 +36,34 @@ def print_board(board):
     for row in board:
         ascii_spaces=[]
         for space in row:
-            space=str(space)
-            ascii_spaces.append(ord(char) for char in space)
+            #space=str(space)
+            ascii_tile=[ord(char) for char in space]
+            ascii_tile=int(''.join(map(str,ascii_tile)))
+            ascii_spaces.append(ascii_tile)
         ascii_board.append(ascii_spaces)
     for row in ascii_board:
         print(row)
 
 
 def legal_move(colour,coord,board):
+
+    #sets the opposite colour
     if colour=="Light":    
         oppositeColour="-Dark"
     else:
         oppositeColour="Light"
-    if board[coord[0]-1,coord[1]]== oppositeColour:
+    
+    # if coord is not empty then a tile cannot be placed
+    if board[coord[0]][coord[1]] != "-None":
+        return False
 
-
+    #if board[coord[0]-1,coord[1]]== oppositeColour:
+    for i in range(-1,2):
+        for j in range(-1,2):
+            print(board[coord[0]+i][coord[1]+j])
 
 board=initialise_board()
-    
+print_board(board)
+#move=legal_move("-Dark",(7,7),board)
 
     
