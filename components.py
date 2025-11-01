@@ -72,17 +72,37 @@ def legal_move(colour,coord,board):
 
     #contains all directions that neighbor around the chosen coord
     direction_arr= [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]
-    #temp variables used in loop
-    xcheck= x
-    ycheck= y
     #condition used to ensure that current coord is within bounds
-    condition= 0<= x <=7 and 0<= y <=7
+    condition= 0<= current_x <=7 and 0<= current_y <=7
 
+    #loops through all possible directions
     for direction in direction_arr:
-        xcheck += direction[0]
-        ycheck += direction[1]
-        condition= 0<= xcheck <=7 and 0<= ycheck <=7
-        if condition == True and board[x][y] == opposite_colour:
+        current_x= x
+        current_y= y
+        #changes x and y to move in the current direction
+        current_x += direction[0]
+        current_y += direction[1]
+        #condition checked in while loop - declared seperately for readability 
+        condition= 0<= current_x <=7 and 0<= current_y <=7
+
+        #runs while x,y are in bounds and the tiles are opponents colour
+        while condition == True and board[current_x][current_y] == opposite_colour:
+            # keeps moving x and y in the same direction
+            current_x += direction[0]
+            current_y += direction[1]
+            
+        if board[current_x][current_y] == colour:
+            valid_arr.append(True)
+        else:
+            valid_arr.append(False)
+
+    if True in valid_arr:
+        return True
+    else:
+        return False
+
+
+
 
 
 
