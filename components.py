@@ -66,16 +66,7 @@ def legal_move(colour,coord,board):
     # if coord is not empty then a tile cannot be placed
     if board[coord[0]][coord[1]] != "-None":
         return False
-
-    valid_arr=[]
-    for i in range(-1,2):
-        for j in range(-1,2):
-            print(board[coord[0]+i][coord[1]+j])
-            if board[coord[0]+i][coord[1]+j] == opposite_colour:
-                print(board[coord[0]+i][coord[1]+j])
-                valid_arr.append( board[coord[0]+i][coord[1]+j] )
-
-    print(valid_arr)
+    
 
 
 board=initialise_board()
