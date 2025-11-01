@@ -21,5 +21,4 @@ def cli_coords_input():
     coord=( x_coord, y_coord )
     return coord
 
-
 cli_coords_input()
