@@ -4,11 +4,11 @@ def initialise_board(size=8):
     board=[]
 
     #nested loop to create a board thats size x size
-    for i in range (size):
+    for i in range(size):
         #sets spaces array to empty for each row
         spaces=[]
 
-        for j in range (size):
+        for j in range(size):
             #initially sets every space to none
             spaces.append("-None")
         #adds spaces array to board array
@@ -25,8 +25,6 @@ def initialise_board(size=8):
     board[centre2][centre2]="Light"
 
     #returns board array
-    for row in board:
-        print(row)
     return(board)
 
 
@@ -101,4 +99,3 @@ def legal_move(colour,coord,board):
         return True
     else:
         return False
-    
