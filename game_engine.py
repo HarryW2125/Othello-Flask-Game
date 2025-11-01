@@ -16,7 +16,7 @@ def cli_coords_input():
             continue
         
         #ensures that chosen coords are in range of the board
-        if x_coord <= 8 and y_coord <= 8:
+        if 0 <= x_coord <= 7 and 0 <= y_coord <= 7:
             valid = True    
         else:
             print("inputs must be in the 8x8 board")
