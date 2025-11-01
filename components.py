@@ -1,4 +1,3 @@
-
 #defines function that initialises the board, size is set to 8 by default
 def initialise_board(size=8):
     #sets board array to empty
@@ -26,7 +25,10 @@ def initialise_board(size=8):
     board[centre2][centre2]="Light"
 
     #returns board array
+    for row in board:
+        print(row)
     return(board)
+
 
 # defines function that prints an ASCII repr. of the board
 def print_board(board):
@@ -52,7 +54,6 @@ def print_board(board):
         print(row)
 
 
-
 #defines function that checks if a move is legal, returns true or false
 def legal_move(colour,coord,board):
 
@@ -65,12 +66,13 @@ def legal_move(colour,coord,board):
     else:
         opposite_colour="Light"
     
-    # if coord is not empty then a tile cannot be placed
-    if board[x][y] != "-None":
+    # if coord is not empty then a tile cannot be placed - coords placed as [y][x] due to how 2d lists are called
+    if board[y][x] != "-None":
         return False
 
     #contains all directions that neighbor around the chosen coord
     direction_arr= [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]
+    #stores true or false for valid moves
     valid_arr=[]
 
     #loops through all possible directions
@@ -82,15 +84,14 @@ def legal_move(colour,coord,board):
         current_y += direction[1]
         #condition checked in while loop - declared seperately for readability - checks if x,y are still in bounds of the grid
         condition= 0<= current_x <=7 and 0<= current_y <=7
-
         #runs while x,y are in bounds and the tiles are opponents colour
-        while condition == True and board[current_x][current_y] == opposite_colour:
+        while condition == True and board[current_y][current_x] == opposite_colour:
             # keeps moving x and y in the same direction
             current_x += direction[0]
             current_y += direction[1]
 
         # if loop ends due to current players colour being reached   
-        if board[current_x][current_y] == colour:
+        if board[current_y][current_x] == colour:
             valid_arr.append(True)
         # if loop ends due to condition being False
         else:
@@ -100,15 +101,4 @@ def legal_move(colour,coord,board):
         return True
     else:
         return False
-
-
-
-
-
-
-
-
-board=initialise_board()
-print_board(board)
-print( legal_move("Light",(2,4),board) )
     
