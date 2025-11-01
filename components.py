@@ -53,7 +53,6 @@ def print_board(board):
 
 
 
-#UNFINISHED
 #defines function that checks if a move is legal, returns true or false
 def legal_move(colour,coord,board):
 
@@ -72,8 +71,7 @@ def legal_move(colour,coord,board):
 
     #contains all directions that neighbor around the chosen coord
     direction_arr= [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]
-    #condition used to ensure that current coord is within bounds
-    condition= 0<= current_x <=7 and 0<= current_y <=7
+    valid_arr=[]
 
     #loops through all possible directions
     for direction in direction_arr:
@@ -82,7 +80,7 @@ def legal_move(colour,coord,board):
         #changes x and y to move in the current direction
         current_x += direction[0]
         current_y += direction[1]
-        #condition checked in while loop - declared seperately for readability 
+        #condition checked in while loop - declared seperately for readability - checks if x,y are still in bounds of the grid
         condition= 0<= current_x <=7 and 0<= current_y <=7
 
         #runs while x,y are in bounds and the tiles are opponents colour
@@ -90,12 +88,14 @@ def legal_move(colour,coord,board):
             # keeps moving x and y in the same direction
             current_x += direction[0]
             current_y += direction[1]
-            
+
+        # if loop ends due to current players colour being reached   
         if board[current_x][current_y] == colour:
             valid_arr.append(True)
+        # if loop ends due to condition being False
         else:
             valid_arr.append(False)
-
+            
     if True in valid_arr:
         return True
     else:
@@ -110,5 +110,5 @@ def legal_move(colour,coord,board):
 
 board=initialise_board()
 print_board(board)
-legal_move("Light",(2,4),board)
+print( legal_move("Light",(2,4),board) )
     
