@@ -57,6 +57,9 @@ def print_board(board):
 #defines function that checks if a move is legal, returns true or false
 def legal_move(colour,coord,board):
 
+    #sets x and y variables - increases readability
+    x=coord[0]
+    y=coord[1]
     #sets the opposite colour
     if colour=="Light":    
         opposite_colour="-Dark"
@@ -64,9 +67,25 @@ def legal_move(colour,coord,board):
         opposite_colour="Light"
     
     # if coord is not empty then a tile cannot be placed
-    if board[coord[0]][coord[1]] != "-None":
+    if board[x][y] != "-None":
         return False
-    
+
+    #contains all directions that neighbor around the chosen coord
+    direction_arr= [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]
+    #temp variables used in loop
+    xcheck= x
+    ycheck= y
+    #condition used to ensure that current coord is within bounds
+    condition= 0<= x <=7 and 0<= y <=7
+
+    for direction in direction_arr:
+        xcheck += direction[0]
+        ycheck += direction[1]
+        condition= 0<= xcheck <=7 and 0<= ycheck <=7
+        if condition == True and board[x][y] == opposite_colour:
+
+
+
 
 
 board=initialise_board()
