@@ -1,3 +1,5 @@
+import components
+
 #function that takes co-ordinate inputs from the user and returns them as a tuple
 def cli_coords_input():
     valid = False
@@ -25,6 +27,18 @@ def cli_coords_input():
     #creates coord tuple with x and y
     coord=( x_coord, y_coord )
     return coord
+
+
+def simple_game_loop():
+    
+    print("Welcome to Othello!")
+    # creates board
+    board = components.initialise_board()
+    #sets move counter
+
+
+
+
 
 
 
