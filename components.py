@@ -33,14 +33,18 @@ def print_board(board):
 
     #creates initial array for ascii board
     ascii_board=[]
+
     for row in board:
+        #creates initial array for each row
         ascii_spaces=[]
+
         for space in row:
             #converts each character in current space to its ASCII value
             ascii_tile=[ord(char) for char in space]
-            # joins each ascii character together to form an ascii repr. of the whole tile
+            # joins each ascii character together to form an ascii repr. of the whole space
             ascii_tile=int(''.join(map(str,ascii_tile)))
             ascii_spaces.append(ascii_tile)
+
         ascii_board.append(ascii_spaces)
     
     #prints ascii board
@@ -48,25 +52,31 @@ def print_board(board):
         print(row)
 
 
+#defines funcction that checks if a move is legal, returns true or false
 def legal_move(colour,coord,board):
 
     #sets the opposite colour
     if colour=="Light":    
-        oppositeColour="-Dark"
+        opposite_colour="-Dark"
     else:
-        oppositeColour="Light"
+        opposite_colour="Light"
     
     # if coord is not empty then a tile cannot be placed
     if board[coord[0]][coord[1]] != "-None":
         return False
 
-    #if board[coord[0]-1,coord[1]]== oppositeColour:
+    valid_arr=[]
     for i in range(-1,2):
         for j in range(-1,2):
             print(board[coord[0]+i][coord[1]+j])
+            if board[coord[0]+i][coord[1]+j] == opposite_colour:
+                print(board[coord[0]+i][coord[1]+j])
+                valid_arr.append( board[coord[0]+i][coord[1]+j] )
+
+    print(valid_arr)
+
 
 board=initialise_board()
 print_board(board)
-#move=legal_move("-Dark",(7,7),board)
-
+legal_move("Light",(2,4),board)
     
