@@ -42,7 +42,7 @@ def print_board(board):
             #converts each character in current space to its ASCII value
             ascii_tile=[ord(char) for char in space]
             # joins each ascii character together to form an ascii repr. of the whole space
-            ascii_tile=int(''.join(map(str,ascii_tile)))
+            ascii_tile=int(''.join( map ( str,ascii_tile )))
             ascii_spaces.append(ascii_tile)
 
         ascii_board.append(ascii_spaces)
@@ -52,7 +52,9 @@ def print_board(board):
         print(row)
 
 
-#defines funcction that checks if a move is legal, returns true or false
+
+#UNFINISHED
+#defines function that checks if a move is legal, returns true or false
 def legal_move(colour,coord,board):
 
     #sets the opposite colour
