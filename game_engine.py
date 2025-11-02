@@ -2,6 +2,7 @@ import components
 
 #function that takes co-ordinate inputs from the user and returns them as a tuple
 def cli_coords_input():
+
     valid = False
 
     #loops until the user enters valid x and y coords
@@ -39,28 +40,32 @@ def simple_game_loop():
     #sets starting player to dark
     current_player= "-Dark"
     end_game = False
+
     while end_game == False and move_counter != 0:
         player_selected = False
+
         #checks there are legal moves
         while player_selected == False:
             valid_arr=[]
+
             for i in range (7):
+
                 for j in range (7):
                     is_valid = components.legal_move(current_player,(j,i),board)
+
                     if is_valid == True:
                         valid_arr.append(True)
                     #CHECK THIS
                     else:
                         valid_arr.append(False)
+                        
             if True in valid_arr:
                 player_selected = True
             else:
-                #swaps players over
+                #changes player
+                current_player = player_swap(current_player)
                 print(f"no legal move for {current_player}, swapping to next player")
-                if current_player =="-Dark":
-                    current_player = "Light"
-                else:
-                    current_player = "-Dark"
+                
         
         coord_chosen = False
         print(f"{current_player}'s Turn")
@@ -69,16 +74,24 @@ def simple_game_loop():
 
             if components.legal_move(current_player, coord,board) == True:
                 #change counters
-                #change player
+                #changes player
+                current_player = player_swap(current_player)
                 coord_chosen = True
                 #decrements move counter
-                move_counter -= 1
-            
+                move_counter -= 1            
             else:
                 print("move is not valid")
                 
 
-            
+#swaps the current player          
+def player_swap(current_player):
+
+    if current_player =="-Dark":
+                current_player = "Light"
+    else:
+            current_player = "-Dark"
+    
+    return current_player
 
 
             
