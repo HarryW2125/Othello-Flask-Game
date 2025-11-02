@@ -40,16 +40,25 @@ def simple_game_loop():
     current_player= player_arr[0]
     end_game = False
     while end_game == False and move_counter != 0:
+        player_selected = False
+        while player_selected == False:
+        valid_arr=[]
+        for i in range (7):
+            for j in range (7):
+                is_valid= components.legal_move(current_player,(j,i),board)
+                print(is_valid)
+                if is_valid == True:
+                    valid_arr.append(True)
+                else:
+                    valid_arr.append(False)
         
-        #checks if there are legal moves for current player
-        legal_tuples=[]
-        for row in board:
-            for space in row:
-                if space == current_player:
-                    legal_tuples.append( (space.index(), row.index()) )
+        if True in valid_arr:
             
 
 
+            
+
+simple_game_loop()
 
 
 
