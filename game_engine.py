@@ -44,33 +44,33 @@ def simple_game_loop():
 
         #checks there are legal moves
         while player_selected == False:
-            valid_arr=[]
             for i in range (7):
                 for j in range (7):
                     is_valid= components.legal_move(current_player,(j,i),board)
-                    if is_valid == True:
-                        valid_arr.append(True)
-                    else:
-                        valid_arr.append(False)
-        
-            if True in valid_arr:
-                player_selected = True
-            
+                    if is_valid[0] == True:
+                        player_selected = True
+
+            if current_player =="-Dark":
+                current_player = "Light"
             else:
-                if current_player =="-Dark":
-                    current_player = "Light"
-                else:
-                    current_player = "-Dark"
+                current_player = "-Dark"
+            player_selected = True
         
         coord_chosen = False
+        print(f"{current_player}'s Turn")
         while coord_chosen == False:
             coord=cli_coords_input()
 
             if components.legal_move(current_player, coord,board) == True:
                 #change counters
+                #change player
                 coord_chosen = True
-                print(coord_chosen)
-                break
+                #decrements move counter
+                move_counter -= 1
+            
+            else:
+                print("move is not valid")
+                
 
             
 
