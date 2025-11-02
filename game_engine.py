@@ -35,6 +35,22 @@ def simple_game_loop():
     # creates board
     board = components.initialise_board()
     #sets move counter
+    move_counter = 60
+    player_arr=["-Dark","-Light"]
+    current_player= player_arr[0]
+    end_game = False
+    while end_game == False and move_counter != 0:
+        
+        #checks if there are legal moves for current player
+        legal_tuples=[]
+        for row in board:
+            for space in row:
+                if space == current_player:
+                    legal_tuples.append( (space.index(), row.index()) )
+            
+
+
+
 
 
 
