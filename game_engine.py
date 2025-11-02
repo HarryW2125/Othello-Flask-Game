@@ -36,23 +36,42 @@ def simple_game_loop():
     board = components.initialise_board()
     #sets move counter
     move_counter = 60
-    player_arr=["-Dark","-Light"]
-    current_player= player_arr[0]
+    #sets starting player to dark
+    current_player= "-Dark"
     end_game = False
     while end_game == False and move_counter != 0:
         player_selected = False
+
+        #checks there are legal moves
         while player_selected == False:
-        valid_arr=[]
-        for i in range (7):
-            for j in range (7):
-                is_valid= components.legal_move(current_player,(j,i),board)
-                print(is_valid)
-                if is_valid == True:
-                    valid_arr.append(True)
-                else:
-                    valid_arr.append(False)
+            valid_arr=[]
+            for i in range (7):
+                for j in range (7):
+                    is_valid= components.legal_move(current_player,(j,i),board)
+                    if is_valid == True:
+                        valid_arr.append(True)
+                    else:
+                        valid_arr.append(False)
         
-        if True in valid_arr:
+            if True in valid_arr:
+                player_selected = True
+            
+            else:
+                if current_player =="-Dark":
+                    current_player = "Light"
+                else:
+                    current_player = "-Dark"
+        
+        coord_chosen = False
+        while coord_chosen == False:
+            coord=cli_coords_input()
+
+            if components.legal_move(current_player, coord,board) == True:
+                #change counters
+                coord_chosen = True
+                print(coord_chosen)
+                break
+
             
 
 
