@@ -70,9 +70,7 @@ def legal_move(colour,coord,board):
 
     #contains all directions that neighbor around the chosen coord
     direction_arr= [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]
-    #stores true or false for valid moves
-    valid_arr=[]
-
+    
     #loops through all possible directions
     for direction in direction_arr:
         current_x= x
@@ -90,12 +88,9 @@ def legal_move(colour,coord,board):
 
         # if loop ends due to current players colour being reached   
         if board[current_y][current_x] == colour:
-            valid_arr.append(True)
-        # if loop ends due to condition being False
-        else:
-            valid_arr.append(False)
-            
-    if True in valid_arr:
-        return True
-    else:
-        return False
+            finish_space = board[current_y][current_x]
+            #returns true and the ending space
+            return True, finish_space
+        
+    #returns false, no valid move found
+    return False, "No finishing space"
