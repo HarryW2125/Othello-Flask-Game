@@ -55,10 +55,9 @@ def simple_game_loop():
 
                     if is_valid == True:
                         valid_arr.append(True)
-                    #CHECK THIS
                     else:
                         valid_arr.append(False)
-                        
+
             if True in valid_arr:
                 player_selected = True
             else:
