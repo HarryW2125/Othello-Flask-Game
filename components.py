@@ -87,9 +87,9 @@ def legal_move(colour,coord,board):
             current_y += direction[1]
 
         # if loop ends because x and y are out of bounds
-        if  condition == False:
+        if condition == False:
             break
-        
+
         #if loop ends due to current players colour being reached
         if board[current_y][current_x] == colour:
             return True
