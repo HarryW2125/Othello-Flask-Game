@@ -86,11 +86,13 @@ def legal_move(colour,coord,board):
             current_x += direction[0]
             current_y += direction[1]
 
-        # if loop ends due to current players colour being reached   
+        # if loop ends because x and y are out of bounds
+        if  condition == False:
+            break
+        
+        #if loop ends due to current players colour being reached
         if board[current_y][current_x] == colour:
-            finish_space = board[current_y][current_x]
-            #returns true and the ending space
-            return True, finish_space
+            return True
         
     #returns false, no valid move found
-    return False, "No finishing space"
+    return False
