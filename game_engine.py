@@ -41,20 +41,26 @@ def simple_game_loop():
     end_game = False
     while end_game == False and move_counter != 0:
         player_selected = False
-
         #checks there are legal moves
         while player_selected == False:
+            valid_arr=[]
             for i in range (7):
                 for j in range (7):
-                    is_valid= components.legal_move(current_player,(j,i),board)
-                    if is_valid[0] == True:
-                        player_selected = True
-
-            if current_player =="-Dark":
-                current_player = "Light"
+                    is_valid = components.legal_move(current_player,(j,i),board)
+                    if is_valid == True:
+                        valid_arr.append(True)
+                    #CHECK THIS
+                    else:
+                        valid_arr.append(False)
+            if True in valid_arr:
+                player_selected = True
             else:
-                current_player = "-Dark"
-            player_selected = True
+                #swaps players over
+                print(f"no legal move for {current_player}, swapping to next player")
+                if current_player =="-Dark":
+                    current_player = "Light"
+                else:
+                    current_player = "-Dark"
         
         coord_chosen = False
         print(f"{current_player}'s Turn")
