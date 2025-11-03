@@ -40,6 +40,9 @@ def simple_game_loop():
     #sets starting player to dark
     current_player= "-Dark"
     end_game = False
+    #sets initial colour counts to 2
+    dark_count = 2
+    light_count = 2
 
     while end_game == False and move_counter != 0:
         player_selected = False
@@ -51,7 +54,7 @@ def simple_game_loop():
             for i in range (7):
 
                 for j in range (7):
-                    is_valid = components.legal_move(current_player,(j,i),board)
+                    is_valid,direction, end_tile = components.legal_move( current_player, (j,i), board )
 
                     if is_valid == True:
                         valid_arr.append(True)
@@ -62,22 +65,42 @@ def simple_game_loop():
                 player_selected = True
             else:
                 #changes player
-                current_player = player_swap(current_player)
                 print(f"no legal move for {current_player}, swapping to next player")
+                current_player = player_swap(current_player)
                 
         
         coord_chosen = False
         print(f"{current_player}'s Turn")
         while coord_chosen == False:
             coord=cli_coords_input()
+            is_valid,direction, target_space = components.legal_move( current_player, coord, board )
+            if is_valid == True:
+                # counters
+                #sets initial coords to starting position
+                x = coord[0]
+                y = coord[1]
+                target_x = target_space[0]
+                target_y = target_space[1]
+                flankcount = 0
 
-            if components.legal_move(current_player, coord,board) == True:
-                #change counters
+                while x != target_x and y != target_y:
+                     x += direction[0]
+                     y += direction[1]
+                     board[y][x] = current_player
+                     flankcount += 1
+                
+                if current_player =="-Dark":
+                    dark_count += flankcount
+                    print(f"Outflanked! {current_player} tile count: {dark_count}")
+                else:
+                    light_count += flankcount
+                    print(f"Outflanked! {current_player} tile count: {light_count}")
+                
                 #changes player
                 current_player = player_swap(current_player)
-                coord_chosen = True
                 #decrements move counter
                 move_counter -= 1            
+                coord_chosen = True
             else:
                 print("move is not valid")
                 
