@@ -66,7 +66,7 @@ def legal_move(colour,coord,board):
     
     # if coord is not empty then a tile cannot be placed - coords placed as [y][x] due to how 2d lists are called
     if board[y][x] != "-None":
-        return False, None, None
+        return False, None, "1st"
 
     #contains all directions that neighbor around the chosen coord
     direction_arr= [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]
@@ -78,21 +78,25 @@ def legal_move(colour,coord,board):
         #changes x and y to move in the current direction
         current_x += direction[0]
         current_y += direction[1]
-        #condition checked in while loop - declared seperately for readability - checks if x,y are still in bounds of the grid
-        condition= 0<= current_x <=7 and 0<= current_y <=7
+
+        # checks conditions for first step
+        #if first step is out of bounds, continues to next direction
+        if  not (0<= current_x <=7 and 0<= current_y <=7):
+            continue
+
+        # if first step is not the opposite colour, continues to next direction
+        if board[current_y][current_x] != opposite_colour:
+            continue
+
         #runs while x,y are in bounds and the tiles are opponents colour
-        while condition == True and board[current_y][current_x] == opposite_colour:
+        while 0<= current_x <=7 and 0<= current_y <=7 and board[current_y][current_x] == opposite_colour:
             # keeps moving x and y in the same direction
             current_x += direction[0]
             current_y += direction[1]
-
-        # if loop ends because x and y are out of bounds
-        if condition == False:
-            break
-
-        #if loop ends due to current players colour being reached
-        if board[current_y][current_x] == colour:
-            return True, direction, (current_x,current_y)
         
+        if 0<= current_x <=7 and 0<= current_y <=7:
+            if board[current_y][current_x] == colour:
+                return True, direction, (current_x, current_y)
+    
     #returns false, no valid move found
     return False, None, None
