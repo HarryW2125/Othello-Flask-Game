@@ -55,7 +55,7 @@ def simple_game_loop():
 
                 for j in range (7):
                     is_valid,direction, end_tile = components.legal_move( current_player, (j,i), board )
-
+                    print(end_tile)
                     if is_valid == True:
                         valid_arr.append(True)
                     else:
@@ -83,10 +83,10 @@ def simple_game_loop():
                 target_y = target_space[1]
                 flankcount = 0
 
-                while x != target_x and y != target_y:
+                while x != target_x or y != target_y:
+                     board[y][x] = current_player
                      x += direction[0]
                      y += direction[1]
-                     board[y][x] = current_player
                      flankcount += 1
                 
                 if current_player =="-Dark":
@@ -113,7 +113,7 @@ def player_swap(current_player):
     else:
             current_player = "-Dark"
     
-    return current_player
+    return str(current_player)
 
 
             
