@@ -59,14 +59,14 @@ def legal_move(colour,coord,board):
     x=coord[0]
     y=coord[1]
     #sets the opposite colour
-    if colour=="Light":    
-        opposite_colour="-Dark"
+    if colour ==" Light":    
+        opposite_colour = "-Dark"
     else:
-        opposite_colour="Light"
+        opposite_colour = "Light"
     
     # if coord is not empty then a tile cannot be placed - coords placed as [y][x] due to how 2d lists are called
     if board[y][x] != "-None":
-        return False
+        return False, None, None
 
     #contains all directions that neighbor around the chosen coord
     direction_arr= [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]
@@ -92,7 +92,7 @@ def legal_move(colour,coord,board):
 
         #if loop ends due to current players colour being reached
         if board[current_y][current_x] == colour:
-            return True
+            return True, direction, (current_x,current_y)
         
     #returns false, no valid move found
-    return False
+    return False, None, None
