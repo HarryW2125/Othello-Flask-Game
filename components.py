@@ -75,28 +75,27 @@ def legal_move(colour,coord,board):
     for direction in direction_arr:
         current_x= x
         current_y= y
-        #changes x and y to move in the current direction
         current_x += direction[0]
         current_y += direction[1]
-
-        # checks conditions for first step
-        #if first step is out of bounds, continues to next direction
-        if  not (0<= current_x <=7 and 0<= current_y <=7):
-            continue
-
-        # if first step is not the opposite colour, continues to next direction
-        if board[current_y][current_x] != opposite_colour:
-            continue
-
-        #runs while x,y are in bounds and the tiles are opponents colour
-        while 0<= current_x <=7 and 0<= current_y <=7 and board[current_y][current_x] == opposite_colour:
-            # keeps moving x and y in the same direction
-            current_x += direction[0]
-            current_y += direction[1]
-        
         if 0<= current_x <=7 and 0<= current_y <=7:
-            if board[current_y][current_x] == colour:
-                return True, direction, (current_x, current_y)
+            if board[current_y][current_x] == opposite_colour:
+
+                #runs while x,y are in bounds and the tiles are opponents colour, or the tile selected is the starting tile
+                while (0<= current_x <=7 and 0<= current_y <=7) and (board[current_y][current_x] == opposite_colour):
+                    # keeps moving x and y in the same direction
+                    current_x += direction[0]
+                    current_y += direction[1]
+
+                    if board[current_y][current_x] == colour and board[y][x] =="-None":
+                        print(x,y)
+                        print(direction)
+                        return True, direction, (x,y)
+                    # if the current tile is empty and the start tile is the correct colour
+                    if board[current_y][current_x] == "-None" and board[y][x] == colour:
+                        print(current_x,current_y)
+                        print(direction)
+                        return True, direction, (current_x,current_y)
+                    
     
     #returns false, no valid move found
     return False, None, None
