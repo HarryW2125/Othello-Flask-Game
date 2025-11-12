@@ -54,7 +54,7 @@ def simple_game_loop():
             for i in range (7):
 
                 for j in range (7):
-                    is_valid,direction, end_tile = components.legal_move( current_player, (j,i), board )
+                    is_valid,direction = components.legal_move( current_player, (j,i), board )
                     if is_valid == True:
                         valid_arr.append(True)
                     else:
@@ -72,32 +72,46 @@ def simple_game_loop():
         print(f"{current_player}'s Turn")
         while coord_chosen == False:
             coord=cli_coords_input()
-            is_valid,direction, target_space = components.legal_move( current_player, coord, board )
+            is_valid,direction = components.legal_move( current_player, coord, board )
             if is_valid == True:
                 # counters
-                #sets initial coords to starting position
-                x = coord[0]
+                x = coord[0] 
                 y = coord[1]
-                target_x = target_space[0]
-                target_y = target_space[1]
-                flankcount = 0
+                board[y][x] = current_player   
+                flip_arr = []
+                flank_count = 0
+                replace_count =0
+                x += direction[0]
+                y += direction[1]
 
-                while x != target_x or y != target_y:
-                     if board[y][x] == current_player:
-                          continue
-                     board[y][x] = current_player
-                     x += direction[0]
-                     y += direction[1]
-                     flankcount += 1
+                while 0<= x <=7 and 0<= y <=7:
+                    if board[y][x] == "-None":
+                         break
+                     
+                    elif board[y][x] == current_player:
+                        
+                        for x,y in flip_arr:
+                            flank_count+=1
+                            print(flank_count)
+                            board[y][x] = current_player
+                        break
+                    else:
+                        print(flank_count)
+                        flip_arr.append((x,y))
+                    x += direction[0]
+                    y += direction[1]
+                    
 
                 for row in board:
                     print(row)
                 
                 if current_player =="-Dark":
-                    dark_count += flankcount
+                    dark_count += flank_count
+                    light_count -= replace_count
                     print(f"Outflanked! {current_player} tile count: {dark_count}")
                 else:
-                    light_count += flankcount
+                    light_count += flank_count
+                    dark_count -= replace_count
                     print(f"Outflanked! {current_player} tile count: {light_count}")
                 
                 #changes player
