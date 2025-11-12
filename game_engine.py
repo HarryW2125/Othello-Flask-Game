@@ -46,7 +46,7 @@ def simple_game_loop():
 
     while end_game == False and move_counter != 0:
         player_selected = False
-
+        swap_counter = 0
         #checks there are legal moves
         while player_selected == False:
             valid_arr=[]
@@ -62,12 +62,18 @@ def simple_game_loop():
 
             if True in valid_arr:
                 player_selected = True
+                swap_counter = 0
             else:
                 #changes player
                 print(f"no legal move for {current_player}, swapping to next player")
                 current_player = player_swap(current_player)
+                swap_counter += 1
+                if swap_counter >= 2:
+                    end_game = True
+                    break
                 
-        
+        if swap_counter >= 2:
+                break
         coord_chosen = False
         print(f"{current_player}'s Turn")
         while coord_chosen == False:
@@ -79,7 +85,7 @@ def simple_game_loop():
                 y = coord[1]
                 board[y][x] = current_player   
                 flip_arr = []
-                flank_count = 0
+                flank_count =1
                 replace_count =0
                 x += direction[0]
                 y += direction[1]
@@ -92,11 +98,12 @@ def simple_game_loop():
                         
                         for x,y in flip_arr:
                             flank_count+=1
-                            print(flank_count)
+                            print("flank",flank_count)
                             board[y][x] = current_player
                         break
                     else:
-                        print(flank_count)
+                        replace_count += 1
+                        print(replace_count)
                         flip_arr.append((x,y))
                     x += direction[0]
                     y += direction[1]
@@ -121,8 +128,14 @@ def simple_game_loop():
                 coord_chosen = True
             else:
                 print("move is not valid")
-    print()
-                
+
+    if light_count > dark_count:
+        print(f"Light has won with {light_count} tiles, against Black's {dark_count} tiles")
+    elif dark_count > light_count:
+        print(f"Dark has won with {dark_count} tiles, against Light's {light_count} tiles")
+    else:
+        print(f"Draw, Light count: {light_count} and Dark count: {dark_count}")
+                       
 
 #swaps the current player          
 def player_swap(current_player):
