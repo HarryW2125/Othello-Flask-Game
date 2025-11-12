@@ -1,5 +1,6 @@
-#defines function that initialises the board, size is set to 8 by default
+
 def initialise_board(size=8):
+    '''Function that initialises the board, size is set to 8 by default.'''
     #sets board array to empty
     board=[]
 
@@ -28,9 +29,10 @@ def initialise_board(size=8):
     return(board)
 
 
-# defines function that prints an ASCII repr. of the board
-def print_board(board):
 
+def print_board(board):
+    
+    '''Prints an ASCII representation of a board object.'''
     #creates initial array for ascii board
     ascii_board=[]
 
@@ -52,15 +54,17 @@ def print_board(board):
         print(row)
 
 
-#defines function that checks if a move is legal, returns true or false
-def legal_move(colour,coord,board):
 
+def legal_move(colour,coord,board):
+    '''Function that checks if a move is legal, returns true or false, and the direction of movement if the move is legal.'''
     #sets x and y variables - increases readability
     x=coord[0]
     y=coord[1]
+
     #sets the opposite colour
     if colour =="Light":    
         opposite_colour = "-Dark"
+
     else:
         opposite_colour = "Light"
     
@@ -73,11 +77,16 @@ def legal_move(colour,coord,board):
     
     #loops through all possible directions
     for direction in direction_arr:
+        #sets initial variables needed for while loop
         current_x= x
         current_y= y
+        #moves x and y one step in current direction
         current_x += direction[0]
         current_y += direction[1]
+
+        #runs if x and y are in bounds
         if 0<= current_x <=7 and 0<= current_y <=7:
+            # runs if the current tile is the other colour
             if board[current_y][current_x] == opposite_colour:
 
                 #runs while x,y are in bounds and the tiles are opponents colour, or the tile selected is the starting tile
@@ -86,14 +95,16 @@ def legal_move(colour,coord,board):
                     current_x += direction[0]
                     current_y += direction[1]
 
+                    #breaks out of the loop if either x or y is out of bounds after moving another step
+                    if 0 > current_x > 7 or  0 > current_y > 7:
+                        break
+                    
+                    #if current tile is the right colour and the start tile is empty
                     if board[current_y][current_x] == colour and board[y][x] =="-None":
-                        print(x,y)
-                        print(direction)
                         return True, direction
+                    
                     # if the current tile is empty and the start tile is the correct colour
                     if board[current_y][current_x] == "-None" and board[y][x] == colour:
-                        print(current_x,current_y)
-                        print(direction)
                         return True, direction
                     
     
