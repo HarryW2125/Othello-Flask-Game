@@ -1,8 +1,7 @@
 import components
 
-#function that takes co-ordinate inputs from the user and returns them as a tuple
 def cli_coords_input():
-
+    '''Takes co-ordinate inputs from the user and returns them as a tuple.'''
     valid = False
 
     #loops until the user enters valid x and y coords
@@ -31,7 +30,7 @@ def cli_coords_input():
 
 
 def simple_game_loop():
-    
+    '''Implements 2 player othello game through the command line.'''
     print("Welcome to Othello!")
     # creates board
     board = components.initialise_board()
@@ -44,101 +43,133 @@ def simple_game_loop():
     dark_count = 2
     light_count = 2
 
+    #runs whilst the game has not ended
     while end_game == False and move_counter != 0:
+
         player_selected = False
         swap_counter = 0
-        #checks there are legal moves
+
+        #checks there are legal moves for the current player
         while player_selected == False:
             valid_arr=[]
 
-            for i in range (7):
+            #loops through every coord on the board
+            for i in range (8):
 
-                for j in range (7):
+                for j in range (8):
+                    #checks move for current coord
                     is_valid,direction = components.legal_move( current_player, (j,i), board )
+                    
+                    #if valid adds true to the valid array
                     if is_valid == True:
                         valid_arr.append(True)
+
                     else:
                         valid_arr.append(False)
 
+            #if at least one move is legal for that player
             if True in valid_arr:
+                #exits inner loop as player has been selected
                 player_selected = True
                 swap_counter = 0
+
             else:
                 #changes player
                 print(f"no legal move for {current_player}, swapping to next player")
                 current_player = player_swap(current_player)
+                #increments swap counter
                 swap_counter += 1
+
+                #if both players have invalid moves, break to outer loop
                 if swap_counter >= 2:
                     end_game = True
                     break
-                
+
+        #if both players have invalid moves, breaks outer loop      
         if swap_counter >= 2:
                 break
+        
         coord_chosen = False
         print(f"{current_player}'s Turn")
+        #runs whilst current player hasnt selected a valid coord
         while coord_chosen == False:
             coord=cli_coords_input()
+            #checks if move is valid for coord
             is_valid,direction = components.legal_move( current_player, coord, board )
+
+            #if move is valid
             if is_valid == True:
-                # counters
+                #sets initial variables used in loop
                 x = coord[0] 
-                y = coord[1]
-                board[y][x] = current_player   
+                y = coord[1] 
                 flip_arr = []
+                #flank count initially set to 1 as initial tile is already flipped before entering the loop
                 flank_count =1
                 replace_count =0
+                #changes initial tile to current player
+                board[y][x] = current_player  
+                #moves x and y one step in the right direction
                 x += direction[0]
                 y += direction[1]
 
+                #runs whilst the tile is on the board
                 while 0<= x <=7 and 0<= y <=7:
+                    #if current tile is empty breaks out of the loop
                     if board[y][x] == "-None":
-                         break
-                     
+                        break
+                    
+                    # if the tile is the colour of the current player, flip all of the tiles in flip_arr to current players colour
                     elif board[y][x] == current_player:
                         
                         for x,y in flip_arr:
                             flank_count+=1
-                            print("flank",flank_count)
                             board[y][x] = current_player
                         break
+                    
+                    # if the tile is the opposite colour, increment replace count and add the coord to the flip arr
                     else:
                         replace_count += 1
                         print(replace_count)
                         flip_arr.append((x,y))
+
+                    #moves x and y one step in the right direction
                     x += direction[0]
                     y += direction[1]
-                    
 
-                for row in board:
-                    print(row)
-                
+                # updates tile counts for both players 
                 if current_player =="-Dark":
                     dark_count += flank_count
                     light_count -= replace_count
                     print(f"Outflanked! {current_player} tile count: {dark_count}")
+
                 else:
                     light_count += flank_count
                     dark_count -= replace_count
                     print(f"Outflanked! {current_player} tile count: {light_count}")
-                
+
                 #changes player
                 current_player = player_swap(current_player)
                 #decrements move counter
                 move_counter -= 1            
                 coord_chosen = True
+
+            #prints error message
             else:
                 print("move is not valid")
 
+    #after game ends, prints who won and tile counts
     if light_count > dark_count:
         print(f"Light has won with {light_count} tiles, against Black's {dark_count} tiles")
+
     elif dark_count > light_count:
         print(f"Dark has won with {dark_count} tiles, against Light's {light_count} tiles")
+
     else:
         print(f"Draw, Light count: {light_count} and Dark count: {dark_count}")
                        
-
-#swaps the current player          
+         
 def player_swap(current_player):
+    '''Function that swaps to the other player.'''
 
     if current_player =="-Dark":
                 current_player = "Light"
@@ -148,10 +179,8 @@ def player_swap(current_player):
     return str(current_player)
 
 
-            
-
-simple_game_loop()
-
+if __name__ == '__main__':
+    simple_game_loop()
 
 
 
