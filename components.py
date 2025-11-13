@@ -84,28 +84,23 @@ def legal_move(colour,coord,board):
         current_x += direction[0]
         current_y += direction[1]
 
-        #runs if x and y are in bounds
-        if 0<= current_x <=7 and 0<= current_y <=7:
-            # runs if the current tile is the other colour
-            if board[current_y][current_x] == opposite_colour:
+        #runs while x,y are in bounds and the tiles are opponents colour
+        while (0<= current_x <=7 and 0<= current_y <=7) and (board[current_y][current_x] == opposite_colour):
+                # keeps moving x and y in the same direction
+                current_x += direction[0]
+                current_y += direction[1]
 
-                #runs while x,y are in bounds and the tiles are opponents colour, or the tile selected is the starting tile
-                while (0<= current_x <=7 and 0<= current_y <=7) and (board[current_y][current_x] == opposite_colour):
-                    # keeps moving x and y in the same direction
-                    current_x += direction[0]
-                    current_y += direction[1]
-
-                    #breaks out of the loop if either x or y is out of bounds after moving another step
-                    if 0 > current_x > 7 or  0 > current_y > 7:
-                        break
+                #breaks out of the loop if either x or y is out of bounds after moving another step
+                if 0 > current_x > 7 or  0 > current_y > 7:
+                    break
                     
-                    #if current tile is the right colour and the start tile is empty
-                    if board[current_y][current_x] == colour and board[y][x] =="-None":
-                        return True, direction
+                #if current tile is the right colour and the start tile is empty
+                if board[current_y][current_x] == colour and board[y][x] =="-None":
+                    return True, direction
                     
-                    # if the current tile is empty and the start tile is the correct colour
-                    if board[current_y][current_x] == "-None" and board[y][x] == colour:
-                        return True, direction
+                # if the current tile is empty and the start tile is the correct colour
+                if board[current_y][current_x] == "-None" and board[y][x] == colour:
+                    return True, direction
                     
     
     #returns false, no valid move found
