@@ -129,7 +129,6 @@ def simple_game_loop():
                     # if the tile is the opposite colour, increment replace count and add the coord to the flip arr
                     else:
                         replace_count += 1
-                        print(replace_count)
                         flip_arr.append((x,y))
 
                     #moves x and y one step in the right direction
@@ -181,8 +180,6 @@ def player_swap(current_player):
 
 if __name__ == '__main__':
     simple_game_loop()
-
-
 
 
 
