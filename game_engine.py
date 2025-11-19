@@ -95,45 +95,48 @@ def simple_game_loop():
         while coord_chosen == False:
             coord=cli_coords_input()
             #checks if move is valid for coord
-            is_valid,direction = components.legal_move( current_player, coord, board )
+            is_valid,directions = components.legal_move( current_player, coord, board )
 
             #if move is valid
             if is_valid == True:
                 #sets initial variables used in loop
                 x = coord[0] 
                 y = coord[1] 
-                flip_arr = []
                 #flank count initially set to 1 as initial tile is already flipped before entering the loop
                 flank_count =1
                 replace_count =0
                 #changes initial tile to current player
-                board[y][x] = current_player  
-                #moves x and y one step in the right direction
-                x += direction[0]
-                y += direction[1]
+                board[y][x] = current_player 
 
-                #runs whilst the tile is on the board
-                while 0<= x <=7 and 0<= y <=7:
-                    #if current tile is empty breaks out of the loop
-                    if board[y][x] == "-None":
-                        break
-                    
-                    # if the tile is the colour of the current player, flip all of the tiles in flip_arr to current players colour
-                    elif board[y][x] == current_player:
-                        
-                        for x,y in flip_arr:
-                            flank_count+=1
-                            board[y][x] = current_player
-                        break
-                    
-                    # if the tile is the opposite colour, increment replace count and add the coord to the flip arr
-                    else:
-                        replace_count += 1
-                        flip_arr.append((x,y))
-
+                #runs for every valid direction
+                for direction in directions:
+                    flip_arr = []
                     #moves x and y one step in the right direction
-                    x += direction[0]
-                    y += direction[1]
+                    current_x = x + direction[0]
+                    current_y = y + direction[1]
+
+                    #runs whilst the tile is on the board
+                    while 0<= current_x <=7 and 0<= current_y <=7:
+                        #if current tile is empty breaks out of the loop
+                        if board[current_y][current_x] == "-None":
+                            break
+                    
+                        # if the tile is the colour of the current player, flip all of the tiles in flip_arr to current players colour
+                        elif board[current_y][current_x] == current_player:
+                        
+                            for current_x,current_y in flip_arr:
+                                flank_count+=1
+                                board[current_y][current_x] = current_player
+                            break
+                    
+                        # if the tile is the opposite colour, increment replace count and add the coord to the flip arr
+                        else:
+                            replace_count += 1
+                            flip_arr.append((current_x,current_y))
+
+                        #moves x and y one step in the right direction
+                        current_x += direction[0]
+                        current_y += direction[1]
                 
                 #outputs board after changes in game state
                 for row in board:
