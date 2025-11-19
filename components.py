@@ -74,6 +74,7 @@ def legal_move(colour,coord,board):
 
     #contains all directions that neighbor around the chosen coord
     direction_arr= [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]
+    valid_direction_arr =[]
     
     #loops through all possible directions
     for direction in direction_arr:
@@ -91,17 +92,19 @@ def legal_move(colour,coord,board):
                 current_y += direction[1]
 
                 #breaks out of the loop if either x or y is out of bounds after moving another step
-                if 0 > current_x > 7 or  0 > current_y > 7:
+                if current_x < 0 or current_x > 7 or current_y < 0 or current_y > 7:
                     break
                     
                 #if current tile is the right colour and the start tile is empty
                 if board[current_y][current_x] == colour and board[y][x] =="-None":
-                    return True, direction
+                    valid_direction_arr.append(direction)
                     
                 # if the current tile is empty and the start tile is the correct colour
                 if board[current_y][current_x] == "-None" and board[y][x] == colour:
-                    return True, direction
+                    valid_direction_arr.append(direction)
                     
-    
-    #returns false, no valid move found
-    return False, None
+    if not valid_direction_arr:
+        #returns false, no valid move found
+        return False, None
+    else:
+        return True, valid_direction_arr
