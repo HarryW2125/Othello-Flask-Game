@@ -41,6 +41,28 @@ def process_move():
         # if space is taken move isn't valid
         if board[y][x] != "-None":
             return jsonify( { "status": "fail", "player": current_player, "message": "Tile already placed here"})
+        
+        valid_arr =[]
+        #loops through every coord on the board
+        for i in range (8):
+
+            for j in range (8):
+                #checks move for current coord
+                is_valid,direction = components.legal_move( current_player, (j,i), board )
+                
+                #if valid adds true to the valid array
+                if is_valid == True:
+                    valid_arr.append(True)
+                
+                else:
+                     valid_arr.append(False)
+                
+        if True not in valid_arr:
+             current_player = player_swap(current_player)
+             session["current_player"] = current_player
+             return jsonify( { "status": "fail", "player": current_player, "message":f"No valid move for {current_player}, swapping to other player"})
+             
+  
 
         is_valid, directions = components.legal_move(current_player, (x,y), board)
         if is_valid == True:
