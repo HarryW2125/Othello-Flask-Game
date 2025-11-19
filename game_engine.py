@@ -134,6 +134,10 @@ def simple_game_loop():
                     #moves x and y one step in the right direction
                     x += direction[0]
                     y += direction[1]
+                
+                #outputs board after changes in game state
+                for row in board:
+                    print(row)
 
                 # updates tile counts for both players 
                 if current_player =="-Dark":
