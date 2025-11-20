@@ -12,6 +12,41 @@ def player_swap(current_player):
     
     return str(current_player)
 
+def check_all_moves(colour,board):
+    valid_arr =[]
+    #loops through every coord on the board
+    for i in range (8):
+
+        for j in range (8):
+            #checks move for current coord
+            is_valid,direction = components.legal_move( colour, (j,i), board )
+                
+            #if valid adds true to the valid array
+            if is_valid == True:
+                valid_arr.append(True)
+                
+            else:
+                valid_arr.append(False)
+                
+    if True in valid_arr:
+        return(True)
+    else:
+        return(False)
+
+def tile_counts(board):
+    light_count = 0
+    dark_count = 0
+    for i in range(8):
+
+        for j in range(8):
+                
+                if board[i][j] == "Light":
+                        light_count +=1
+                if board[i][j] =="-Dark":
+                        dark_count +=1
+    return(light_count,dark_count)
+     
+
 app = Flask(__name__)
 
 #creates secret key so sessions can be utilised
@@ -42,28 +77,6 @@ def process_move():
         if board[y][x] != "-None":
             return jsonify( { "status": "fail", "player": current_player, "message": "Tile already placed here"})
         
-        valid_arr =[]
-        #loops through every coord on the board
-        for i in range (8):
-
-            for j in range (8):
-                #checks move for current coord
-                is_valid,direction = components.legal_move( current_player, (j,i), board )
-                
-                #if valid adds true to the valid array
-                if is_valid == True:
-                    valid_arr.append(True)
-                
-                else:
-                     valid_arr.append(False)
-                
-        if True not in valid_arr:
-             current_player = player_swap(current_player)
-             session["current_player"] = current_player
-             return jsonify( { "status": "fail", "player": current_player, "message":f"No valid move for {current_player}, swapping to other player"})
-             
-  
-
         is_valid, directions = components.legal_move(current_player, (x,y), board)
         if is_valid == True:
                 #flank count initially set to 1 as initial tile is already flipped before entering the loop
@@ -99,14 +112,56 @@ def process_move():
                             current_y += direction[1]
 
                 current_player = player_swap(current_player)
-                
+                moves_valid_light = check_all_moves("Light",board)
+                moves_valid_dark = check_all_moves("-Dark",board)
                 #valid moves updates session
                 session["current_player"] = current_player
                 session["board"] = board
                 session["move_counter"] = move_counter -1
 
-                return jsonify( { "status": "success", "player": current_player, "board":board})
+                if (moves_valid_dark == False and moves_valid_light == False) or ( move_counter == 0):
+                    light_count,dark_count = tile_counts(board)
+
+                    if dark_count > light_count:
+                         winner = "Dark"
+                    elif light_count > dark_count:
+                         winner = "-Light"
+                    else:
+                         winner = "Draw"
+
+                    return jsonify( {"finished":f"{winner} won, light tiles: {light_count}, dark tiles: {dark_count}","board":board})
+                
+                elif (moves_valid_dark == False and current_player=="Light") or (moves_valid_light == False and current_player=="-Dark"):
+                    previous_player = player_swap(current_player)
+                    return jsonify({"status":"success","player": current_player, "board":board,"message": f"no valid move for {previous_player}, {current_player} turn "})
+                
+
+                else:    
+                    return jsonify( { "status": "success", "player": current_player, "board":board,"message":""})
         else:
+            moves_valid_light = check_all_moves("Light",board)
+            moves_valid_dark = check_all_moves("-Dark",board)
+            if (moves_valid_dark == False and moves_valid_light == False) or ( move_counter == 0):
+                light_count,dark_count = tile_counts(board)
+
+                if dark_count > light_count:
+                    winner = "-Dark"
+                elif light_count > dark_count:
+                    winner = "Light"
+                else:
+                    winner = "Draw"
+                                    
+                return jsonify( {"finished":f"{winner} won, light tiles: {light_count}, dark tiles: {dark_count}","board":board})
+            
+            elif (moves_valid_dark == False and current_player=="-Dark") or (moves_valid_light == False and current_player=="Light"):
+                current_player = player_swap(current_player)
+                previous_player = player_swap(current_player)
+                #valid moves updates session
+                session["current_player"] = current_player
+                session["board"] = board
+                return jsonify( { "status":"fail", "player": previous_player,"message":f"No valid move for current player, swapping to {current_player}"})
+
+            else:
               return jsonify( { "status": "fail", "player": current_player, "message":"Move is not valid"})
 
 if __name__ == "__main__":
