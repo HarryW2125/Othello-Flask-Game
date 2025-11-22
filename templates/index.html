@@ -131,13 +131,40 @@
             messageBox.innerHTML += message + '\n';
             messageBox.scrollTop = messageBox.scrollHeight; // Auto-scroll to the bottom
         }
+
+        // allows saving of game
+        function saveGame(){
+            fetch('save_game', {
+                    method: 'GET',
+                })
+            .then(response => response.json())
+            .then(data => {
+                updateMessageBox('Game saved successfully')})
+        }
+        
+        // loads saved game state
+         function loadGame(){
+            fetch('load_game', {
+                    method: 'GET',
+                })
+            .then(response => response.json())
+            .then(data => {
+                // updates board
+                board = data["game_board"]
+                // loads board from save
+                loadBoard()
+                updateMessageBox('Game loaded successfully')})
+        }
+            
+
+
     </script>
 </head>
 <body>
     <h1 style="text-align:center;">Othello/Reversi Game</h1>
     <div id="button_box">
-        <button class="load_button"> Load Game</button>
-        <button class="save_button"> Save Game</button>
+        <button class="load_button" onclick="loadGame()"> Load Game</button>
+        <button class="save_button" onclick="saveGame()"> Save Game</button>
         </div>
 
     <div class="container">
