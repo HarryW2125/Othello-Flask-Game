@@ -1,7 +1,8 @@
-from flask import Flask, request, render_template, jsonify, session
-import components
 import random
 import json
+from flask import Flask, request, render_template, jsonify, session
+import components
+
 
 def player_swap(current_player):
     '''Function that swaps to the other player.'''
