@@ -70,7 +70,6 @@ def start_game():
     #saves variables to current session so they can be used between app routes
     session["current_player"] = current_player
     session["board"] = board
-    session["move_counter"] =60
     #returns html template and variables
     return render_template('index.html', game_board = board, current_player = current_player)
 
@@ -80,7 +79,6 @@ def process_move():
     #retrieves variables from session
     current_player = session.get("current_player")
     board = session.get("board")
-    move_counter = session.get("move_counter")
     #gets x and y variables from html template, -1 needed as python backend uses 0-7 instead of 1-8
     x = int(request.args['x']) -1
     y = int(request.args['y']) -1
@@ -132,10 +130,9 @@ def process_move():
             #updates session variables
             session["current_player"] = current_player
             session["board"] = board
-            session["move_counter"] = move_counter -1
 
             #if there are no valid moves for either player or move counter =0, counts up tiles and game ends
-            if (moves_valid_dark == False and moves_valid_light == False) or ( move_counter == 0):
+            if (moves_valid_dark == False and moves_valid_light == False):
                 light_count,dark_count = tile_counts(board)
 
                 if dark_count > light_count:
@@ -153,15 +150,15 @@ def process_move():
                 current_player = player_swap(current_player)
                 #updates session variable again as current player has changed
                 session["current_player"] = current_player
-                return jsonify({"status":"success","player": current_player, "board":board,"message": f"no valid move for {previous_player}, {current_player} turn "})
+                return jsonify( {"status":"success","player": current_player, "board":board,"message": f"no valid move for {previous_player}, {current_player} turn "} )
             
             #move is valid with no other conditions
             else:    
-                return jsonify( { "status": "success", "player": current_player, "board":board,"message":""})
+                return jsonify( { "status": "success", "player": current_player, "board":board,"message":""} )
             
     #move is not valid
     else:
-        return jsonify( { "status": "fail", "player": current_player, "message":""})
+        return jsonify( { "status": "fail", "player": current_player, "message":""} )
     
 @app.route('/save_game')
 def save_game():
@@ -169,12 +166,10 @@ def save_game():
     #gets variables from session
     current_player = session.get("current_player")
     board = session.get("board")
-    move_counter = session.get("move_counter")
     #puts variables into a dictionary so they can be converted to json
     data = {
         "board": board,
         "current_player": current_player,
-        "move_counter":move_counter
     }
 
     #opens json file and writes data dictionary to it
@@ -194,13 +189,10 @@ def load_game():
     #retrieves variables from json file
     current_player = json_data["current_player"]
     board = json_data["board"]
-    move_counter = json_data["move_counter"] 
     #updates session variables
     session["current_player"] = current_player
     session["board"] = board
-    session["move_counter"] = move_counter -1
-    return jsonify({"game_board":board,"message":f"Its {current_player}'s turn."})
-
+    return jsonify( {"game_board":board,"message":f"Its {current_player}'s turn."} )
 
 if __name__ == "__main__":
     app.run(debug=True)
