@@ -30,8 +30,7 @@ def initialise_board(size=8):
 
 
 
-def print_board(board):
-    
+def print_board(board):    
     '''Prints an ASCII representation of a board object.'''
     #creates initial array for ascii board
     ascii_board=[]
@@ -96,16 +95,19 @@ def legal_move(colour,coord,board):
                 if current_x < 0 or current_x > 7 or current_y < 0 or current_y > 7:
                     break
                     
-                #if current tile is the right colour and the start tile is empty
+                #if current tile is the right colour and the start tile is empty, adds direction to valid arr
                 if board[current_y][current_x] == colour and board[y][x] =="-None":
                     valid_direction_arr.append(direction)
                     
-                # if the current tile is empty and the start tile is the correct colour
+                # if the current tile is empty and the start tile is the correct colour, adds direction to valid arr
                 if board[current_y][current_x] == "-None" and board[y][x] == colour:
                     valid_direction_arr.append(direction)
-                    
+
+    #if no directions/moves are valid               
     if not valid_direction_arr:
         #returns false, no valid move found
         return False, None
+    
+    #if there is at least one valid move
     else:
         return True, valid_direction_arr
