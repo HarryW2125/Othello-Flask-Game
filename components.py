@@ -1,4 +1,4 @@
-
+'''Module that creates functions to be used in othello'''
 def initialise_board(size=8):
     '''Function that initialises the board, size is set to 8 by default.'''
     #sets board array to empty
@@ -26,11 +26,9 @@ def initialise_board(size=8):
     board[centre2][centre2]="Light"
 
     #returns board array
-    return(board)
+    return board
 
-
-
-def print_board(board):    
+def print_board(board):
     '''Prints an ASCII representation of a board object.'''
     #creates initial array for ascii board
     ascii_board=[]
@@ -47,35 +45,35 @@ def print_board(board):
             ascii_spaces.append(ascii_tile)
 
         ascii_board.append(ascii_spaces)
-    
+
     #prints ascii board
     for row in ascii_board:
         print(row)
 
-
-
 def legal_move(colour,coord,board):
-    '''Function that checks if a move is legal, returns true or false, and the direction of movement if the move is legal.'''
+    '''Function that checks if a move is legal, returns true or false, and valid directions.'''
     #sets x and y variables - increases readability
     x=coord[0]
     y=coord[1]
 
     #sets the opposite colour
-    if colour =="Light":    
+    if colour =="Light":
         opposite_colour = "-Dark"
 
     else:
         opposite_colour = "Light"
-    
-    # if coord is not empty then a tile cannot be placed - coords placed as [y][x] due to how 2d lists are called
+
+    # if coord is not empty then a tile cannot be placed
     if board[y][x] != "-None":
         return False, None
 
     #contains all directions that neighbor around the chosen coord
-    direction_arr= [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]
-    #initialises array that stores all directions that are valid for a coord
+    direction_arr= [
+        [0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]
+        ]
+    #initialises array that stores all valid directions
     valid_direction_arr =[]
-    
+
     #loops through all possible directions
     for direction in direction_arr:
         #sets initial variables needed for while loop
@@ -87,27 +85,26 @@ def legal_move(colour,coord,board):
 
         #runs while x,y are in bounds and the tiles are opponents colour
         while (0<= current_x <=7 and 0<= current_y <=7) and (board[current_y][current_x] == opposite_colour):
-                # keeps moving x and y in the same direction
-                current_x += direction[0]
-                current_y += direction[1]
+            # keeps moving x and y in the same direction
+            current_x += direction[0]
+            current_y += direction[1]
 
-                #breaks out of the loop if either x or y is out of bounds after moving another step
-                if current_x < 0 or current_x > 7 or current_y < 0 or current_y > 7:
-                    break
-                    
-                #if current tile is the right colour and the start tile is empty, adds direction to valid arr
-                if board[current_y][current_x] == colour and board[y][x] =="-None":
-                    valid_direction_arr.append(direction)
-                    
-                # if the current tile is empty and the start tile is the correct colour, adds direction to valid arr
-                if board[current_y][current_x] == "-None" and board[y][x] == colour:
-                    valid_direction_arr.append(direction)
+            #breaks out of the loop if either x or y is out of bounds after moving another step
+            if current_x < 0 or current_x > 7 or current_y < 0 or current_y > 7:
+                break
 
-    #if no directions/moves are valid               
+            #if current tile is the right colour + start tile is empty, adds direction to valid arr
+            if board[current_y][current_x] == colour and board[y][x] =="-None":
+                valid_direction_arr.append(direction)
+
+            # if the current tile is empty + start tile correct colour, adds direction to valid arr
+            if board[current_y][current_x] == "-None" and board[y][x] == colour:
+                valid_direction_arr.append(direction)
+
+    #if no directions/moves are valid
     if not valid_direction_arr:
         #returns false, no valid move found
         return False, None
-    
+
     #if there is at least one valid move
-    else:
-        return True, valid_direction_arr
+    return True, valid_direction_arr
