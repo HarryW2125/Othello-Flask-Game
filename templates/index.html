@@ -50,6 +50,13 @@
             white-space: pre-line; /* Preserve line breaks */
             line-height: 1em; /* Adjust as needed */
         }
+
+        #button_box {
+            position: fixed;
+            left:14px;
+            top:50%;
+            border: 1px solid black;
+        }
     </style>
     <script>
         //Get the board that is passed from the python flask code
@@ -128,7 +135,11 @@
 </head>
 <body>
     <h1 style="text-align:center;">Othello/Reversi Game</h1>
-    <div class="button_container"
+    <div id="button_box">
+        <button class="load_button"> Load Game</button>
+        <button class="save_button"> Save Game</button>
+        </div>
+
     <div class="container">
         <div class="board_grid">
             {% for i in range(game_board|length) %}
