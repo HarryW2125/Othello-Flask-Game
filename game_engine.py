@@ -1,3 +1,4 @@
+'''Implements 2-player game of othello through command line'''
 import components
 
 def cli_coords_input():
@@ -5,8 +6,8 @@ def cli_coords_input():
     valid = False
 
     #loops until the user enters valid x and y coords
-    while valid == False:
-        
+    while valid is False:
+
         #error handling in the case of non-integers being inputted
         try:
             #user inputs for x and y
@@ -16,14 +17,14 @@ def cli_coords_input():
         except ValueError:
             print("inputs must be integers")
             continue
-        
+
         #ensures that chosen coords are in range of the board
         if 0 <= x_coord <= 7 and 0 <= y_coord <= 7:
-            valid = True    
+            valid = True
         else:
             print("inputs must be in the 8x8 board")
             continue
-    
+
     #creates coord tuple with x and y
     coord=( x_coord, y_coord )
     return coord
@@ -44,13 +45,13 @@ def simple_game_loop():
     light_count = 2
 
     #runs whilst the game has not ended
-    while end_game == False and move_counter != 0:
+    while end_game is False and move_counter != 0:
 
         player_selected = False
         swap_counter = 0
 
         #checks there are legal moves for the current player
-        while player_selected == False:
+        while player_selected is False:
             valid_arr=[]
 
             #loops through every coord on the board
@@ -59,9 +60,9 @@ def simple_game_loop():
                 for j in range (8):
                     #checks move for current coord
                     is_valid,direction = components.legal_move( current_player, (j,i), board )
-                    
+
                     #if valid adds true to the valid array
-                    if is_valid == True:
+                    if is_valid is True:
                         valid_arr.append(True)
 
                     else:
@@ -85,28 +86,28 @@ def simple_game_loop():
                     end_game = True
                     break
 
-        #if both players have invalid moves, breaks outer loop      
+        #if both players have invalid moves, breaks outer loop
         if swap_counter >= 2:
-                break
-        
+            break
+
         coord_chosen = False
         print(f"{current_player}'s Turn")
         #runs whilst current player hasnt selected a valid coord
-        while coord_chosen == False:
+        while coord_chosen is False:
             coord=cli_coords_input()
             #checks if move is valid for coord
             is_valid,directions = components.legal_move( current_player, coord, board )
 
             #if move is valid
-            if is_valid == True:
+            if is_valid is True:
                 #sets initial variables used in loop
-                x = coord[0] 
-                y = coord[1] 
-                #flank count initially set to 1 as initial tile is already flipped before entering the loop
+                x = coord[0]
+                y = coord[1]
+                #flank count initially set to 1 as initial tile is already flipped
                 flank_count =1
                 replace_count =0
                 #changes initial tile to current player
-                board[y][x] = current_player 
+                board[y][x] = current_player
 
                 #runs for every valid direction
                 for direction in directions:
@@ -120,29 +121,29 @@ def simple_game_loop():
                         #if current tile is empty breaks out of the loop
                         if board[current_y][current_x] == "-None":
                             break
-                    
-                        # if the tile is the colour of the current player, flip all of the tiles in flip_arr to current players colour
-                        elif board[current_y][current_x] == current_player:
-                        
+
+                        # if the tile is the colour of the current player
+                        if board[current_y][current_x] == current_player:
+
+                            #flip tiles in flip_arr to current colour
                             for current_x,current_y in flip_arr:
                                 flank_count+=1
                                 board[current_y][current_x] = current_player
                             break
-                    
-                        # if the tile is the opposite colour, increment replace count and add the coord to the flip arr
-                        else:
-                            replace_count += 1
-                            flip_arr.append((current_x,current_y))
+
+                        #increment replace count +add the coord to the flip arr
+                        replace_count += 1
+                        flip_arr.append((current_x,current_y))
 
                         #moves x and y one step in the right direction
                         current_x += direction[0]
                         current_y += direction[1]
-                
+
                 #outputs board after changes in game state
                 for row in board:
                     print(row)
 
-                # updates tile counts for both players 
+                # updates tile counts for both players
                 if current_player =="-Dark":
                     dark_count += flank_count
                     light_count -= replace_count
@@ -156,7 +157,7 @@ def simple_game_loop():
                 #changes player
                 current_player = player_swap(current_player)
                 #decrements move counter
-                move_counter -= 1            
+                move_counter -= 1
                 coord_chosen = True
 
             #prints error message
@@ -172,23 +173,18 @@ def simple_game_loop():
 
     else:
         print(f"Draw, Light count: {light_count} and Dark count: {dark_count}")
-                       
-         
+
+
 def player_swap(current_player):
     '''Function that swaps to the other player.'''
 
     if current_player =="-Dark":
-                current_player = "Light"
+        current_player = "Light"
     else:
-            current_player = "-Dark"
-    
+        current_player = "-Dark"
+
     return str(current_player)
 
 
 if __name__ == '__main__':
     simple_game_loop()
-
-
-
-
-
