@@ -141,31 +141,7 @@ def process_move():
                 else:    
                     return jsonify( { "status": "success", "player": current_player, "board":board,"message":""})
         else:
-            ##check if this is needed
-            '''moves_valid_light = check_all_moves("Light",board)
-            moves_valid_dark = check_all_moves("-Dark",board)
-            if (moves_valid_dark == False and moves_valid_light == False) or ( move_counter == 0):
-                light_count,dark_count = tile_counts(board)
-
-                if dark_count > light_count:
-                    winner = "-Dark"
-                elif light_count > dark_count:
-                    winner = "Light"
-                else:
-                    winner = "Draw"
-                                    
-                return jsonify( {"finished":f"{winner} won, light tiles: {light_count}, dark tiles: {dark_count}","board":board})
-            
-            elif (moves_valid_dark == False and current_player=="-Dark") or (moves_valid_light == False and current_player=="Light"):
-                current_player = player_swap(current_player)
-                previous_player = player_swap(current_player)
-                #valid moves updates session
-                session["current_player"] = current_player
-                session["board"] = board
-                return jsonify( { "status":"fail", "player": previous_player,"message":f"No valid move for current player, swapping to {current_player}"})'''
-
-            #else:
-            return jsonify( { "status": "fail", "player": current_player, "message":"Move is not valid"})
+            return jsonify( { "status": "fail", "player": current_player, "message":""})
 
 if __name__ == "__main__":
     app.run(debug=True)
