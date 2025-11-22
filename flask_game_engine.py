@@ -62,104 +62,102 @@ def start_game():
     session["move_counter"] =60
     return render_template('index.html', game_board = board, current_player = current_player)
 
-@app.route('/move', methods=['GET'])
+@app.route('/move')
 def process_move():
-    if request.method =='GET':
-        #retrieves variables from session
-        current_player = session.get("current_player")
-        board = session.get("board")
-        move_counter = session.get("move_counter")
+    #retrieves variables from session
+    current_player = session.get("current_player")
+    board = session.get("board")
+    move_counter = session.get("move_counter")
 
-        #gets x and y variables from html template
-        x = int(request.args['x']) -1
-        y = int(request.args['y']) -1
+    #gets x and y variables from html template
+    x = int(request.args['x']) -1
+    y = int(request.args['y']) -1
 
-        # if space is taken move isn't valid
-        if board[y][x] != "-None":
-            return jsonify( { "status": "fail", "player": current_player, "message": "Tile already placed here"})
-        
-        is_valid, directions = components.legal_move(current_player, (x,y), board)
-        if is_valid == True:
-                #flank count initially set to 1 as initial tile is already flipped before entering the loop
-                flank_count =1
-                #changes initial tile to current player
-                board[y][x] = current_player
+    # if space is taken move isn't valid
+    if board[y][x] != "-None":
+        return jsonify( { "status": "fail", "player": current_player, "message": "Tile already placed here"})
+    
+    is_valid, directions = components.legal_move(current_player, (x,y), board)
+    if is_valid == True:
+            #flank count initially set to 1 as initial tile is already flipped before entering the loop
+            flank_count =1
+            #changes initial tile to current player
+            board[y][x] = current_player
 
-                for direction in directions: 
-                    flip_arr = []
-                    #moves x and y one step in the right direction
-                    current_x = x + direction[0]
-                    current_y = y + direction[1]
+            for direction in directions: 
+                flip_arr = []
+                #moves x and y one step in the right direction
+                current_x = x + direction[0]
+                current_y = y + direction[1]
 
-                    #runs whilst the tile is on the board
-                    while 0<= current_x <=7 and 0<= current_y <=7:
-                        #if current tile is empty breaks out of the loop
-                        if board[current_y][current_x] == "-None":
-                            break
+                #runs whilst the tile is on the board
+                while 0<= current_x <=7 and 0<= current_y <=7:
+                    #if current tile is empty breaks out of the loop
+                    if board[current_y][current_x] == "-None":
+                        break
+                
+                    # if the tile is the colour of the current player, flip all of the tiles in flip_arr to current players colour
+                    elif board[current_y][current_x] == current_player:
                     
-                        # if the tile is the colour of the current player, flip all of the tiles in flip_arr to current players colour
-                        elif board[current_y][current_x] == current_player:
-                        
-                            for current_x,current_y in flip_arr:
-                                flank_count+=1
-                                board[current_y][current_x] = current_player
-                            break
-                    
-                        # if the tile is the opposite colour, increment replace count and add the coord to the flip arr
-                        else:
-                            flip_arr.append((current_x,current_y))
-                         #moves x and y one step in the right direction
-                            current_x += direction[0]
-                            current_y += direction[1]
-
-                current_player = player_swap(current_player)
-                moves_valid_light = check_all_moves("Light",board)
-                moves_valid_dark = check_all_moves("-Dark",board)
-                #valid moves updates session
-                session["current_player"] = current_player
-                session["board"] = board
-                session["move_counter"] = move_counter -1
-
-                if (moves_valid_dark == False and moves_valid_light == False) or ( move_counter == 0):
-                    light_count,dark_count = tile_counts(board)
-
-                    if dark_count > light_count:
-                         winner = "Dark"
-                    elif light_count > dark_count:
-                         winner = "Light"
+                        for current_x,current_y in flip_arr:
+                            flank_count+=1
+                            board[current_y][current_x] = current_player
+                        break
+                
+                    # if the tile is the opposite colour, increment replace count and add the coord to the flip arr
                     else:
-                         winner = "Draw"
+                        flip_arr.append((current_x,current_y))
+                        #moves x and y one step in the right direction
+                        current_x += direction[0]
+                        current_y += direction[1]
 
-                    return jsonify( {"finished":f"{winner} won, light tiles: {light_count}, dark tiles: {dark_count}","board":board})
-                
-                elif (moves_valid_dark == False and current_player=="-Dark") or (moves_valid_light == False and current_player=="Light"):
-                    previous_player = current_player
-                    current_player = player_swap(current_player)
-                    session["current_player"] = current_player
-                    return jsonify({"status":"success","player": current_player, "board":board,"message": f"no valid move for {previous_player}, {current_player} turn "})
-                
+            current_player = player_swap(current_player)
+            moves_valid_light = check_all_moves("Light",board)
+            moves_valid_dark = check_all_moves("-Dark",board)
+            #valid moves updates session
+            session["current_player"] = current_player
+            session["board"] = board
+            session["move_counter"] = move_counter -1
 
-                else:    
-                    return jsonify( { "status": "success", "player": current_player, "board":board,"message":""})
-        else:
-            return jsonify( { "status": "fail", "player": current_player, "message":""})
-        
-@app.route('/save_game', methods=['GET'])
+            if (moves_valid_dark == False and moves_valid_light == False) or ( move_counter == 0):
+                light_count,dark_count = tile_counts(board)
+
+                if dark_count > light_count:
+                        winner = "Dark"
+                elif light_count > dark_count:
+                        winner = "Light"
+                else:
+                        winner = "Draw"
+
+                return jsonify( {"finished":f"{winner} won, light tiles: {light_count}, dark tiles: {dark_count}","board":board})
+            
+            elif (moves_valid_dark == False and current_player=="-Dark") or (moves_valid_light == False and current_player=="Light"):
+                previous_player = current_player
+                current_player = player_swap(current_player)
+                session["current_player"] = current_player
+                return jsonify({"status":"success","player": current_player, "board":board,"message": f"no valid move for {previous_player}, {current_player} turn "})
+            
+
+            else:    
+                return jsonify( { "status": "success", "player": current_player, "board":board,"message":""})
+    else:
+        return jsonify( { "status": "fail", "player": current_player, "message":""})
+    
+@app.route('/save_game')
 def save_game():
-    if request.method =='GET':
-        current_player = session.get("current_player")
-        board = session.get("board")
-        move_counter = session.get("move_counter")
-        data = {
-            "board": board,
-            "current_player": current_player,
-            "move_counter":move_counter
-        }
+    current_player = session.get("current_player")
+    board = session.get("board")
+    move_counter = session.get("move_counter")
+    data = {
+        "board": board,
+        "current_player": current_player,
+        "move_counter":move_counter
+    }
 
-        with open("saved_game.json","w") as file:
-            json.dump(data ,file)
+    with open("saved_game.json","w") as file:
+        json.dump(data ,file)
         
-        return jsonify()
+    return jsonify()
 
 @app.route('/load_game')
 def load_game():
@@ -173,7 +171,7 @@ def load_game():
     session["current_player"] = current_player
     session["board"] = board
     session["move_counter"] = move_counter -1
-    return jsonify({"game_board":board})
+    return jsonify({"game_board":board,"message":f"Its {current_player}'s turn."})
 
 
     
