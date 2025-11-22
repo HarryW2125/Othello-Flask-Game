@@ -1,4 +1,5 @@
 '''Module that creates functions to be used in othello'''
+
 def initialise_board(size=8):
     '''Function that initialises the board, size is set to 8 by default.'''
     #sets board array to empty
@@ -28,6 +29,7 @@ def initialise_board(size=8):
     #returns board array
     return board
 
+
 def print_board(board):
     '''Prints an ASCII representation of a board object.'''
     #creates initial array for ascii board
@@ -49,6 +51,7 @@ def print_board(board):
     #prints ascii board
     for row in ascii_board:
         print(row)
+
 
 def legal_move(colour,coord,board):
     '''Function that checks if a move is legal, returns true or false, and valid directions.'''
