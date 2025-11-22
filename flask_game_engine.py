@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template, jsonify, session
 import components
 import random
+import json
 
 def player_swap(current_player):
     '''Function that swaps to the other player.'''
@@ -61,7 +62,7 @@ def start_game():
     session["move_counter"] =60
     return render_template('index.html', game_board = board, current_player = current_player)
 
-@app.route('/move', methods=['GET','POST'])
+@app.route('/move', methods=['GET'])
 def process_move():
     if request.method =='GET':
         #retrieves variables from session
@@ -142,6 +143,42 @@ def process_move():
                     return jsonify( { "status": "success", "player": current_player, "board":board,"message":""})
         else:
             return jsonify( { "status": "fail", "player": current_player, "message":""})
+        
+@app.route('/save_game', methods=['GET'])
+def save_game():
+    if request.method =='GET':
+        current_player = session.get("current_player")
+        board = session.get("board")
+        move_counter = session.get("move_counter")
+        data = {
+            "board": board,
+            "current_player": current_player,
+            "move_counter":move_counter
+        }
+
+        with open("saved_game.json","w") as file:
+            json.dump(data ,file)
+        
+        return jsonify()
+
+@app.route('/load_game')
+def load_game():
+    with open("saved_game.json","r") as file:
+          json_data = json.load(file)
+    current_player = json_data["current_player"]
+    board = json_data["board"]
+    move_counter = json_data["move_counter"]
+    
+    #updates session variables
+    session["current_player"] = current_player
+    session["board"] = board
+    session["move_counter"] = move_counter -1
+    return jsonify({"game_board":board})
+
+
+    
+
+     
 
 if __name__ == "__main__":
     app.run(debug=True)
