@@ -29,9 +29,6 @@ def check_all_moves(colour,board):
             if is_valid is True:
                 valid_arr.append(True)
 
-            else:
-                valid_arr.append(False)
-
     #returns true if at least one move is valid, otherwise false
     if True in valid_arr:
         return True
