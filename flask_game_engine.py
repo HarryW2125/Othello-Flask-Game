@@ -32,7 +32,7 @@ def check_all_moves(colour,board):
     #returns true if at least one move is valid, otherwise false
     if True in valid_arr:
         return True
-    
+
     return False
 
 
@@ -119,13 +119,11 @@ def process_move():
                         board[current_y][current_x] = current_player
                     break
 
-                #if the tile is the opposite colour
-                else:
-                    #add the coord to the flip arr
-                    flip_arr.append((current_x,current_y))
-                    #moves x and y one step in the right direction
-                    current_x += direction[0]
-                    current_y += direction[1]
+                #add the coord to the flip arr
+                flip_arr.append((current_x,current_y))
+                #moves x and y one step in the right direction
+                current_x += direction[0]
+                current_y += direction[1]
 
         current_player = player_swap(current_player)
         #checks if there are any valid moves for both players
@@ -136,7 +134,7 @@ def process_move():
         session["board"] = board
 
         #if there are no valid moves for either player, counts up tiles and game ends
-        if (moves_valid_dark == False and moves_valid_light == False):
+        if (moves_valid_dark is False and moves_valid_light is False):
             light_count,dark_count = tile_counts(board)
 
             if dark_count > light_count:
@@ -149,7 +147,7 @@ def process_move():
             return jsonify({"finished":f"{winner} won, light tiles: {light_count}, dark tiles: {dark_count}","board":board})
 
             #after swapping players, if the new player has no valid moves, swaps to other player
-        if (moves_valid_dark == False and current_player=="-Dark") or (moves_valid_light == False and current_player=="Light"):
+        if (moves_valid_dark is False and current_player=="-Dark") or (moves_valid_light is False and current_player=="Light"):
             previous_player = current_player
             current_player = player_swap(current_player)
             #updates session variable again as current player has changed
@@ -157,8 +155,7 @@ def process_move():
             return jsonify({"status":"success","player": current_player, "board":board,"message": f"no valid move for {previous_player}, {current_player} turn "})
 
         #move is valid with no other conditions
-        else:
-            return jsonify( { "status": "success", "player": current_player, "board":board,"message":""} )
+        return jsonify( { "status": "success", "player": current_player, "board":board,"message":""} )
 
     #move is not valid
     else:
