@@ -1,6 +1,7 @@
 '''Implements Flask version of othello.'''
 import random
 import json
+import time
 from flask import Flask, request, render_template, jsonify, session
 import components
 
@@ -63,12 +64,12 @@ def ai_move(board):
     for i in range(8):
 
         for j in range(8):
-            is_valid,directions = components.legal_move("Light",(j,i))
+            is_valid,directions = components.legal_move("Light",(j,i),board)
 
             if is_valid is True:
                 move_options_arr.append( (j,i))
                 directions_arr.append(directions)
-    
+    best_coord = None
     best_tile_flip = 0
     
     for i in range( len(move_options_arr) ):
@@ -100,13 +101,6 @@ def ai_move(board):
     return best_coord
 
 
-                
-
-
-
-
-
-
 #creates flask app
 app = Flask(__name__)
 
@@ -124,7 +118,7 @@ def start_game():
     session["current_player"] = current_player
     session["board"] = board
     #returns html template and variables
-    return render_template('index.html', game_board = board, current_player = current_player)
+    return render_template('index_ai.html', game_board = board, current_player = current_player)
 
 
 @app.route('/move')
@@ -133,7 +127,7 @@ def process_move():
     #retrieves variables from session
     current_player = session.get("current_player")
     board = session.get("board")
-    #gets x and y variables from html template, -1 needed as python backend uses 0-7 instead of 1-8
+    #gets x and y variables from html template if its the users turn, -1 needed as python backend uses 0-7 instead of 1-8
     x = int(request.args['x']) -1
     y = int(request.args['y']) -1
 
@@ -145,8 +139,6 @@ def process_move():
     is_valid, directions = components.legal_move(current_player, (x,y), board)
 
     if is_valid is True:
-        #flank count initially set to 1
-        flank_count =1
         #changes initial tile to current player
         board[y][x] = current_player
 
@@ -167,7 +159,6 @@ def process_move():
 
                     #flip all of the tiles in flip_arr to current players colour
                     for current_x,current_y in flip_arr:
-                        flank_count+=1
                         board[current_y][current_x] = current_player
                     break
 
@@ -212,6 +203,45 @@ def process_move():
     #move is not valid
     else:
         return jsonify( { "status": "fail", "player": current_player, "message":""} )
+
+#COME BACK HERE
+@app.route('/ai_move')
+def process_ai_move():
+    time.sleep(3)
+    board = session["board"]
+    current_player = "Light"
+    coord = ai_move(board)
+    x=coord[0]
+    y=coord[1]
+    #changes initial tile to current player
+    board[y][x] = current_player
+    is_valid, directions = components.legal_move(current_player, (x,y), board)
+
+    for direction in directions:
+        flip_arr = []
+        #moves x and y one step in the right direction
+        current_x = x + direction[0]
+        current_y = y + direction[1]
+
+        #runs whilst the tile is on the board
+        while 0<= current_x <=7 and 0<= current_y <=7:
+            #if current tile is empty breaks out of the loop
+            if board[current_y][current_x] == "-None":
+                break
+
+            #if the tile is the colour of the current player
+            if board[current_y][current_x] == current_player:
+
+                #flip all of the tiles in flip_arr to current players colour
+                for current_x,current_y in flip_arr:
+                    board[current_y][current_x] = current_player
+                break
+
+            #add the coord to the flip arr
+            flip_arr.append((current_x,current_y))
+            #moves x and y one step in the right direction
+            current_x += direction[0]
+            current_y += direction[1]
 
 
 @app.route('/save_game')
