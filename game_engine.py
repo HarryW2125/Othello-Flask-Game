@@ -140,8 +140,7 @@ def simple_game_loop():
                         current_y += direction[1]
 
                 #outputs board after changes in game state
-                for row in board:
-                    print(row)
+                components.print_board(board)
 
                 # updates tile counts for both players
                 if current_player =="-Dark":
