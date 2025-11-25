@@ -87,9 +87,35 @@
                     updateMessageBox("It's " + data['player'] + "'s turn.");
                     //Update the board
                     board = data['board'];
-                    
                     //Reload the board
-                    loadBoard();}          
+                    loadBoard();
+                    fetch(url+'?x=0&y=0', {
+                        method: 'GET',
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data['status'] === 'success'){
+                            updateMessageBox('Move accepted at (' + x + ', ' + y + ')' + data['message']);
+                            updateMessageBox("It's " + data['player'] + "'s turn.");
+                            //Update the board
+                            board = data['board'];
+                            //Reload the board
+                            loadBoard();}
+                        
+                        else if (data['status'] === 'fail'){
+                            updateMessageBox('Invalid move at (' + x + ', ' + y + '): ' + data['message']);}
+                
+                        else if (data['finished']){
+                            //Game is finished
+                            //Update the board
+                            board = data['board'];
+                            //Reload the board
+                            loadBoard();        
+                            document.getElementById('messageBox').innerHTML = data['finished'].toString();
+                            alert(data['finished'].toString());
+                        }
+
+                    }  )}        
                 else if (data['status'] === 'fail'){
                     updateMessageBox('Invalid move at (' + x + ', ' + y + '): ' + data['message']);}
                 
@@ -107,6 +133,7 @@
                 console.error('Error:', error);
             });
         }
+
 
         function loadBoard() {
             for (let y = 0; y < board.length; y++) {
@@ -154,8 +181,7 @@
                 // loads board from save
                 loadBoard()
                 updateMessageBox('Game loaded successfully, '+ data["message"])})
-        }
-            
+        }     
     </script>
 </head>
 <body>
