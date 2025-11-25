@@ -97,7 +97,7 @@ def ai_move(board):
         if tile_flip > best_tile_flip:
             best_tile_flip = tile_flip
             best_coord = (x,y)
-    
+
     return best_coord
 
 
