@@ -128,6 +128,7 @@ def process_move():
     current_player = session.get("current_player")
     board = session.get("board")
     if current_player == "Light":
+        time.sleep(2)
         coord = ai_move(board)
         print(coord)
         x = coord[0]
