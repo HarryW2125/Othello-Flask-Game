@@ -58,21 +58,25 @@ def tile_counts(board):
 
 
 def ai_move(board):
-    print("ai move running")
+    '''Calculates and returns coord for AI move.'''
     move_options_arr = []
     directions_arr = []
 
+    #loops through every space on the board
     for i in range(8):
 
         for j in range(8):
             is_valid,directions = components.legal_move("Light",(j,i),board)
 
             if is_valid is True:
+                #adds move to potential move pool for ai
                 move_options_arr.append( (j,i))
                 directions_arr.append(directions)
+
     best_coord = None
     best_tile_flip = 0
     
+    #loops through ai move pool
     for i in range( len(move_options_arr) ):
         tile_flip = 0
         x = move_options_arr[i][0]
@@ -85,15 +89,17 @@ def ai_move(board):
 
             #runs whilst the tile is on the board
             while 0<= current_x <=7 and 0<= current_y <=7:
-                #if current tile is empty breaks out of the loop
+                #if current tile is empty or light breaks out of the loop
                 if board[current_y][current_x] == "-None" or board[current_y][current_x] == "Light":
                     break
 
                 if board[current_y][current_x] == "-Dark":
                     tile_flip +=1
+                    #continues along direction
                     current_x += direction[0]
                     current_y += direction[1]
-
+        
+        #if the current move flips more tiles, reassign best_tile_flip
         if tile_flip > best_tile_flip:
             best_tile_flip = tile_flip
             best_coord = (x,y)
@@ -127,13 +133,17 @@ def process_move():
     #retrieves variables from session
     current_player = session.get("current_player")
     board = session.get("board")
+
+    # if player is ai
     if current_player == "Light":
+        #creates time between player move appearing on board and ai move appearing
         time.sleep(1)
+        #gets coord for ai move
         coord = ai_move(board)
-        print(coord)
         x = coord[0]
         y = coord[1]
-        print("AI coords chosen")
+
+    #if player is human
     if current_player == "-Dark":
         #gets x and y variables from html template if its the users turn, -1 needed as python backend uses 0-7 instead of 1-8
         x = int(request.args['x']) -1
