@@ -30,26 +30,11 @@ def initialise_board(size=8):
     return board
 
 
+#print normal characters
 def print_board(board):
     '''Prints an ASCII representation of a board object.'''
-    #creates initial array for ascii board
-    ascii_board=[]
 
     for row in board:
-        #creates initial array for each row
-        ascii_spaces=[]
-
-        for space in row:
-            #converts each character in current space to its ASCII value
-            ascii_tile=[ord(char) for char in space]
-            # joins each ascii character together to form an ascii repr. of the whole space
-            ascii_tile=int(''.join( map ( str,ascii_tile )))
-            ascii_spaces.append(ascii_tile)
-
-        ascii_board.append(ascii_spaces)
-
-    #prints ascii board
-    for row in ascii_board:
         print(row)
 
 
