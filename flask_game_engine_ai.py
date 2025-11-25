@@ -58,6 +58,7 @@ def tile_counts(board):
 
 
 def ai_move(board):
+    print("ai move running")
     move_options_arr = []
     directions_arr = []
 
@@ -77,7 +78,6 @@ def ai_move(board):
         x = move_options_arr[i][0]
         y = move_options_arr[i][1]
 
-        #COME BACK HERE - this for loop is in wrong pos
         for direction in directions_arr[i]:
             #moves x and y one step in the right direction
             current_x = x + direction[0]
@@ -91,8 +91,8 @@ def ai_move(board):
 
                 if board[current_y][current_x] == "-Dark":
                     tile_flip +=1
-                    current_x = x + direction[0]
-                    current_y = y + direction[1]
+                    current_x += direction[0]
+                    current_y += direction[1]
 
         if tile_flip > best_tile_flip:
             best_tile_flip = tile_flip
@@ -127,9 +127,16 @@ def process_move():
     #retrieves variables from session
     current_player = session.get("current_player")
     board = session.get("board")
-    #gets x and y variables from html template if its the users turn, -1 needed as python backend uses 0-7 instead of 1-8
-    x = int(request.args['x']) -1
-    y = int(request.args['y']) -1
+    if current_player == "Light":
+        coord = ai_move(board)
+        print(coord)
+        x = coord[0]
+        y = coord[1]
+        print("AI coords chosen")
+    if current_player == "-Dark":
+        #gets x and y variables from html template if its the users turn, -1 needed as python backend uses 0-7 instead of 1-8
+        x = int(request.args['x']) -1
+        y = int(request.args['y']) -1
 
     # if space is taken move isn't valid
     if board[y][x] != "-None":
@@ -203,45 +210,6 @@ def process_move():
     #move is not valid
     else:
         return jsonify( { "status": "fail", "player": current_player, "message":""} )
-
-#COME BACK HERE
-@app.route('/ai_move')
-def process_ai_move():
-    time.sleep(3)
-    board = session["board"]
-    current_player = "Light"
-    coord = ai_move(board)
-    x=coord[0]
-    y=coord[1]
-    #changes initial tile to current player
-    board[y][x] = current_player
-    is_valid, directions = components.legal_move(current_player, (x,y), board)
-
-    for direction in directions:
-        flip_arr = []
-        #moves x and y one step in the right direction
-        current_x = x + direction[0]
-        current_y = y + direction[1]
-
-        #runs whilst the tile is on the board
-        while 0<= current_x <=7 and 0<= current_y <=7:
-            #if current tile is empty breaks out of the loop
-            if board[current_y][current_x] == "-None":
-                break
-
-            #if the tile is the colour of the current player
-            if board[current_y][current_x] == current_player:
-
-                #flip all of the tiles in flip_arr to current players colour
-                for current_x,current_y in flip_arr:
-                    board[current_y][current_x] = current_player
-                break
-
-            #add the coord to the flip arr
-            flip_arr.append((current_x,current_y))
-            #moves x and y one step in the right direction
-            current_x += direction[0]
-            current_y += direction[1]
 
 
 @app.route('/save_game')
