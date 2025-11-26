@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Othello Board</title>
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* Vertically align items in the middle */
+            height: 70vh; /* Full height of the viewport */
+        }
+        .board_grid {
+            display: grid;
+            grid-template-columns: repeat({{game_board|length}}, 60px);
+            grid-template-rows: repeat({{game_board|length}}, 60px);
+            gap: 2px;
+            background: #006400;
+            padding: 10px;
+            width: fit-content;
+            margin: 40px auto;
+        }
+        .cell {
+            width: 60px;
+            height: 60px;
+            background: #787d78;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+        .cell:hover {
+            background: #dd0712;
+        } 
+        .piece {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+        .black {
+            background: #02334e;
+        }
+        .white {
+            background: #5b97ec;
+            border: 1px solid #02334e;
+        }
+        #messageBox{
+            height: 10em; /* Adjust as needed */
+            overflow-y: auto; /* Enable vertical scrolling */
+            white-space: pre-line; /* Preserve line breaks */
+            line-height: 1em; /* Adjust as needed */
+        }
+
+        #button_box {
+            position: fixed;
+            left:14px;
+            top:50%;
+            border: 1px solid black;
+        }
+    </style>
+    <script>
+        //Get the board that is passed from the python flask code
+        let board = {{game_board|tojson}};
+        console.log(board);
+
+        // Load the grid format once the page has loaded
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBoard();
+        }, false);
+
+        function sendMove(x, y, url) {
+            /**
+            * do a GET request to the server with the x and y coordinates for the move
+            * The server will respond with a JSON object containing whether the move was legal
+            */
+
+            fetch(url+'?x='+x+'&y='+y, {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(data => {
+                //Process the response
+                if (data['status'] === 'success'){
+                    updateMessageBox('Move accepted at (' + x + ', ' + y + ')' + data['message']);
+                    updateMessageBox("It's " + data['player'] + "'s turn.");
+                    //Update the board
+                    board = data['board'];
+                    //Reload the board
+                    loadBoard();
+                    fetch(url+'?x=0&y=0', {
+                        method: 'GET',
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data['status'] === 'success'){
+                            updateMessageBox('Move accepted at (' + x + ', ' + y + ')' + data['message']);
+                            updateMessageBox("It's " + data['player'] + "'s turn.");
+                            //Update the board
+                            board = data['board'];
+                            //Reload the board
+                            loadBoard();}
+                        
+                        else if (data['status'] === 'fail'){
+                            updateMessageBox('Invalid move at (' + x + ', ' + y + '): ' + data['message']);}
+                
+                        else if (data['finished']){
+                            //Game is finished
+                            //Update the board
+                            board = data['board'];
+                            //Reload the board
+                            loadBoard();        
+                            document.getElementById('messageBox').innerHTML = data['finished'].toString();
+                            alert(data['finished'].toString());
+                        }
+
+                    }  )}        
+                else if (data['status'] === 'fail'){
+                    updateMessageBox('Invalid move at (' + x + ', ' + y + '): ' + data['message']);}
+                
+                else if (data['finished']){
+                    //Game is finished
+                    //Update the board
+                    board = data['board'];
+                    //Reload the board
+                    loadBoard();        
+                    document.getElementById('messageBox').innerHTML = data['finished'].toString();
+                    alert(data['finished'].toString());
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+
+        function loadBoard() {
+            for (let y = 0; y < board.length; y++) {
+                for (let x = 0; x < board[y].length; x++) {
+                    let cell = document.getElementById(`cell-${x}-${y}`);
+                    cell.innerHTML = ''; // Clear existing pieces
+                    if (board[y][x] === '-Dark') {
+                        let piece = document.createElement('div');
+                        piece.className = 'piece black';
+                        cell.appendChild(piece);
+                    } else if (board[y][x] === 'Light') {
+                        let piece = document.createElement('div');
+                        piece.className = 'piece white';
+                        cell.appendChild(piece);
+                    }
+                }
+            }
+        }
+
+        function updateMessageBox(message) {
+            let messageBox = document.getElementById('messageBox');
+            messageBox.innerHTML += message + '\n';
+            messageBox.scrollTop = messageBox.scrollHeight; // Auto-scroll to the bottom
+        }
+
+        // allows saving of game
+        function saveGame(){
+            fetch('save_game', {
+                    method: 'GET',
+                })
+            .then(response => response.json())
+            .then(data => {
+                updateMessageBox('Game saved successfully')})
+        }
+        
+        // loads saved game state
+         function loadGame(){
+            fetch('load_game', {
+                    method: 'GET',
+                })
+            .then(response => response.json())
+            .then(data => {
+                // updates board
+                board = data["game_board"]
+                // loads board from save
+                loadBoard()
+                updateMessageBox('Game loaded successfully, '+ data["message"])})
+        }     
+    </script>
+</head>
+<body>
+    <h1 style="text-align:center;">Othello/Reversi Game</h1>
+    <div id="button_box">
+        <button class="load_button" onclick="loadGame()"> Load Game</button>
+        <button class="save_button" onclick="saveGame()"> Save Game</button>
+        </div>
+
+    <div class="container">
+        <div class="board_grid">
+            {% for i in range(game_board|length) %}
+                {% for j in range(game_board|length) %}
+                    <div class="cell" id = "cell-{{ j }}-{{ i }}" onclick="sendMove({{ j+1 }}, {{ i+1 }}, &#39;/move&#39;)">
+                        {% if game_board[i][j] == '-Dark' %}
+                            <div class="piece black"></div>
+                        {% elif game_board[i][j] == 'Light' %}
+                            <div class="piece white"></div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+    <div id="messageBox" style="width: 80%; height: 10vh; border: 1px solid black; padding: 10px; overflow-y: auto;">
+        <h2>Game Log:</h2>
+    </div>
+</body>
+</html>
