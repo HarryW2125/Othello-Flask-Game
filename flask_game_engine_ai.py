@@ -106,7 +106,6 @@ def ai_move(board):
 
     return best_coord
 
-
 #creates flask app
 app = Flask(__name__)
 
