@@ -1,6 +1,10 @@
 
 # Othello Game Project
 
+### Author: Harry Williams
+
+### License: MIT, see LICENSE.txt for more details
+
 <style>body {text-align: justify}</style>
 
 This project is a Flask implementation of the board game Othello, with an AI that plays against you and a dynamically updating board on the webpage. The game can also be played through the command line with 2 players using a seperate module.
