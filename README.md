@@ -12,14 +12,14 @@ This module has a series of functions that are essential to computing the core a
 ### initialise_board function
 
 ---
-![alt text](./flowcharts/initialise_board.png)
+![initialise_board](./flowcharts/initialise_board.png)
 
 This function passes through a default value for size as 8, this ensures that the board is created with 64 spaces default whilst allowing the user to change the size themselves. This function as it creates the board the game is played on. I have used a nested loop here to add none to all of the tiles initially as this will create a board that has size * size dimensions, and in the default case, 8 columns and 8 rows. Setting the 4 central spaces in this arrangement is significant as it sets up the board for starting the game.
 
 ### print_board function
 
 ---
-![alt text](./flowcharts/print_board.png)
+![print_board](./flowcharts/print_board.png)
 
 This function is fairly simple, a board object is passed through and printed. This is needed to print the board state for the command line version of the game. I have chosen to print the board row by row with a for loop as this gives the board a grid shape. Printing the board in one print statement would not give the 8x8 shape wanted.
 
@@ -27,7 +27,7 @@ This function is fairly simple, a board object is passed through and printed. Th
 
 ---
 
-![alt text](./flowcharts/legal_move.png)
+![legal_move](./flowcharts/legal_move.png)
 
 This function takes a colour, coord and a board object as parameters to check if there are any legal moves for that colour at the coord passed through. This is needed so that moves can be checked for legality before being commited to the board state. I have set an opposite_colour variable that stores the other colour not passed through as this will be used later in the function to check whether to keep moving in the current direction. An initial check to see if the current tile is empty is necessary as a tile cannot be placed in a space that already has a tile present. In the actual code, I have defined an array containing direction tuples:
 
@@ -43,6 +43,24 @@ This module implements a simple version of othello through the command line for 
 
 ### cli_coords_input
 
-![alt text](./flowcharts/coords_input.png)
+---
 
-This function takes x and y inputs from a user, validates and sanitises the input and returns the coord as a tuple. This is needed to ensure users moves are sent back to the game loop in the right format, and to catch erroneous inputs being entered. I have used a while loop here that runs whilst a valid coord hasnt been entered. This allows for re-entering of x and y values after invalid inputs by the user
+![coords_input](./flowcharts/coords_input.png)
+
+This function takes x and y inputs from a user, validates and sanitises the input and returns the coord as a tuple. This is needed to ensure users moves are sent back to the game loop in the right format, and to catch erroneous inputs being entered. I have used a while loop here that runs whilst a valid coord hasnt been entered. This allows for re-entering of x and y values after invalid inputs by the user. In the code I have used try/except error handling to catch errors where integers are not entered. I have used this as it's a good way to catch specific errors or cases. Casting both inputs to integers  can cause a `ValueError` which is caught by the except block. This block prints an error message and I have then used a continue statement to run the next iteration of the while loop. If x and y are accepted as integers an additional check is made to see if both x and y are in bounds of the board. If they aren't another continue statement has been used. If the x and y are within bounds the coord is now valid which will terminate the while loop. A coord tuple with (x,y) is then created and returned to the main game loop.
+
+### player_swap function
+
+---
+
+![player_swap](./flowcharts/player_swap.png)
+
+This is a simple function that takes in the current player as a parameter and swaps this to the other player. I have chosen to create this alongside the functions in the specification as its an extremely common process that needs to happen in both the command line and flask game engines multiple times. Selection has been used here to swap the current player based on the player passed through e.g. light to dark or vice versa.
+
+### simple_game_loop function
+
+---
+
+![simple_game_loop](./flowcharts/simple_game_loop.png)
+
+This function implements the core gameplay loop needed to play Othello through the command line, using other functions from this module and functions from components within. This is needed as it gives the game structure and allows it to actually be played by 2 players. A board object is initialised and other variables are set up before the loop begins. Both `light_count` and `dark_count` are initially set to 2 due to the starting condition of the board. I have used quite a few nested loops in this function to implement the loop. The outermost loop runs whilst the game hasn't ended and `move_counter` is not 0.
