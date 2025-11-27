@@ -82,7 +82,7 @@ def legal_move(colour,coord,board):
                 break
 
             #if current tile is the right colour + start tile is empty, adds direction to valid arr
-            if board[current_y][current_x] == colour and board[y][x] =="-None":
+            if board[current_y][current_x] == colour: #and board[y][x] =="-None":
                 valid_direction_arr.append(direction)
 
     #if no directions/moves are valid
