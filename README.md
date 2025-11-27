@@ -1,4 +1,7 @@
+
 # Othello Game Project
+
+<style>body {text-align: justify}</style>
 
 This project is a Flask implementation of the board game Othello, with an AI that plays against you and a dynamically updating board on the webpage. This game can also be played through the command line using a seperate module that doesnt use Flask.
 
@@ -26,3 +29,10 @@ This function is fairly simple, a board object is passed through and printed. I 
 
 ![alt text](image-6.png)
 
+This function takes a colour, coord and a board object as parameters to check if there are any legal moves for that colour at the coord passed through. I have set an opposite_colour variable that stores the other colour not passed through as this will be used later in the function to check whether to keep moving in the current direction. An initial check to see if the current tile is empty is necessary as a tile cannot be placed in a space that already has a tile present.
+
+In the actual code, I have defined an array containing direction tuples:
+
+`direction_arr= [(0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-1, 0), (-1, 1)]`
+
+All of these directions stored are changes to the x and y coords that allow for checking of all 8 directions including diagonals around the starting coord. E.g. (0,1) is the coord (x + 0, y + 1). I have chosen to implement the checking of moves using this array as it allows iterative movement of a coord in a specific direction until the conditions are met that determine the validity of a move. These conditions are if the coord is not on the board
