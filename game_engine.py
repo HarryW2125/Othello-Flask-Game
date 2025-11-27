@@ -11,8 +11,8 @@ def cli_coords_input():
         #error handling in the case of non-integers being inputted
         try:
             #user inputs for x and y
-            x_coord=int(input ("Enter the x co-ordinate") )
-            y_coord=int(input ("Enter the y co-ordinate") )
+            x_coord=int(input ("Enter the x co-ordinate") ) -1
+            y_coord=int(input ("Enter the y co-ordinate") ) -1
 
         except ValueError:
             print("inputs must be integers")
@@ -43,6 +43,8 @@ def simple_game_loop():
     #sets initial colour counts to 2
     dark_count = 2
     light_count = 2
+    #print initial board
+    components.print_board(board)
 
     #runs whilst the game has not ended
     while end_game is False and move_counter != 0:
