@@ -1,5 +1,5 @@
 
-# Othello Game Project
+# Othello Flask Implementation
 
 ### Author: Harry Williams
 
