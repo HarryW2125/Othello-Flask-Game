@@ -57,7 +57,7 @@ def legal_move(colour,coord,board):
 
     #contains all directions that neighbor around the chosen coord
     direction_arr= [
-        [0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]
+        (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-1, 0), (-1, 1)
         ]
     #initialises array that stores all valid directions
     valid_direction_arr =[]
