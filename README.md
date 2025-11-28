@@ -5,6 +5,8 @@
 
 This project is a Flask implementation of the board game Othello, with an AI that plays against you and a dynamically updating board on the webpage. The game can also be played through the command line with 2 players using a seperate module.
 
+## Usage
+
 ## Components Module
 
 This module has a series of functions that are essential to computing the core aspects of the game: initialising the board, printing the board and checking the validity of moves. This is needed as it provides the fundamental functionality needed to implement othello.
@@ -69,11 +71,90 @@ The first nested while loop checks that there are legal moves for the current pl
 
 The next nested while loop runs whilst the current player has not selected a valid coord. A coord is first chosen using `cli_coords_input()` before `legal_move()` is run again but just for the coord entered. The legality of the move has to be checked again as the first loop just checks if legal moves are present. The user could ultimately enter any coord on the board hence the rechecking. If an invalid move is entered, a suitable message is outputted to the command line and the while loop increments. If a valid move is entered, the valid directions of this move are used to flip these tiles to the current players colour. Initially, both of my `flank_count` and `replace_count` variables are set to 1 and 0 respectively, there is a subtle difference between these variables. Flank_count represents the number of tiles swapped to the current colour, whereas replace_count represents the number of tiles of the opposite colour that have been replaced. Flank_count is initially set to 1 as the free space at the coord entered will be set to the colour of the current player. Both of these variables are used later in the function to update colour counts accordingly. In regards to the flipping algorithm, a section of code runs for each direction that is similiar to the flow of the valid move algorithm. Instead of returning true when the current players colour is found, each coord in `flip_arr` is set to the current colour. When a coord is moved to that is the other colour, replace_count is incremented by 1 and the coord is appended to flip_arr. The coord is also incremented again. I have decided to store the coords to flip in an array as this allows for a simple way to change all of these elements through a for loop.
 
-The tile counts for both players are now updated, with the current players count incrementing by the value stored in flank count, and the other colour decrementing by the value stored in replace count. This is needed as it ensures tile counts stay accurate for both players.
+The tile counts for both players are now updated, with the current players count incrementing by the value stored in flank count, and the other colour decrementing by the value stored in replace count. The other colour count is reduced as tiles have been flipped to the current colour. This is needed as it ensures tile counts stay accurate for both players. The player is then swapped as this concludes the turn for the current player. The coord has also been chosen so this while loop is terminated.
+
+After the outer loop has finished i.e. when the game has ended, the tile counts for both players are compared using if/elif/else statements to determine the winner. I have included an else that runs if both players have the same number of tiles which could be a possibility. Handling edge cases like this ensures the loop runs smoothly without errors.
 
 ## Flask Game Engine Module
 
+This module implements the flask version of the game, with app routes for every function and an AI opponent to play against. This version also includes saving and loading capabilities through the use of json files. This is a significant module as it allows the game to be played through a front end user interface against an AI.
+
+### check_all_moves function
+
+---
+
+![check_all_moves](./flowcharts/check_all_moves.png)
+
+This is an additional function I have made alongside the specification, that checks if there are any valid moves for a certain colour, returning True or False. I have decided to make this function as it increases the readability of the app routes it is used within. This functionality is also needed more than once in the module, being used when determining player swaps or ending the game.
+
+The board object is iterated through using a nested for loop. The `legal_move()` function from the components module is called on every coord for the colour passed through. This method is used as it is very thorough, ensuring that valid moves are always found if they exist. If at least one move is valid out of every move checked, the function returns True otherwise it returns False.
+
+### tile_counts function
+
+---
+
+![tile_counts](./flowcharts/tile_counts.png)
+
+This is another additional function that I have decided to create for the sake of modularity. This function counts the number of light and dark tiles on the board before returning both. This is needed to determine the winner of the game after it has ended depending on the highest tile count.
+
+The board object is iterated through and each coord is checked to see if its light or dark. These counts are incremented accordingly depending on the colour of the tile. I haven't used an else statement here as the coord being empty does not increment any of the variables, it just iterates to the next coord.
+
+### ai_move function
+
+---
+
+![ai_move](./flowcharts/ai_move.png)
+
+This function takes the board object as a parameter and performs a series of processes to determine a move for the AI opponent given the current board state. The coord of the move is returned to the main program. The way I have implemented this does make the AI slightly harder to beat as it will pick the move that results in the greatest number of tiles being flipped. Although, this may not be the best move as it could set up a good move for the user. This function is needed as it allows the user to play against an AI opponent by picking a valid coord for its move.
+
+Each coordinate is checked for validity by calling the legal_move function. If this returns true, the coord and its corresponding directions are added to 2 distinct arrays: `move_options_arr` and `directions_arr`. Both of these are significant as one stores all the valid coords and the other stores all the valid directions for that coord. These will both be kept in sync with each other as values are appended in the same if block. This means that the same index called on both arrays will return the right pair of coords and directions.
+
+After this, a similiar tile flipping mechanism to the one found in `simple_game_loop()` has been used to determine the move that flips the most tiles. Each coord is iterated through and within each valid direction for that coord is iterated through. This is to ensure that every tile count is checked. The tile flipping functions the same as previously however whilst the current coord is still the opposite colour, a tile flip counter is incremented by 1. When the tile flipping has stopped by breaking out of the loop, the tiles flipped are compared to the highest number of tiles flipped, and the highest number is updated if necessary. This ensures that the highest tile count is always kept accurate. `best_tile_flip` is initially set to 0 as allows for an accurate comparison of variables. After this, the best coord that flips the most tiles is returned to the main program.
+
+### start_game function
+
+---
+
+![start_game](./flowcharts/start_game.png)
+
+This function is very simple. Its main purpose is to assign initial variables and render the index template on the front end, ready for users to proceed with the game. The initial variables set up are the board and the current player. I have made use of flask sessions here to store these variables. Sessions allow for variables to be used between app routes without having to set their scope to global. This is significant as the variables in the backend need to be kept consistent across app routes.
+
+### process_move function
+
+---
+
+![process_move](./flowcharts/process_move.png)
+
+This function processes move played by both the user and the AI when the `/move` route is called from the frontend. This includes checking the legality of inputted moves, flipping tiles, changing players and ending the game if necessary. This function is significant because it is the main app route that provides functionality to the frontend, without this the game would not progress and the board wouldn't update dynamically.
+
+Initially both the board object and the current player are retrieved from the session. This allows them to be used and modified in this app route. In the actual code, if the current player is the AI, the `ai_move` function is called to return a coord. I have used `time.sleep(1)` before this to allow some time between the board updating from a player move and it updating for the ai move. Through some basic manual testing before using `sleep`, I found that the user would not have time to see the board after their move before the AI move appears. If the current player is the user then the x and y coords are retrieved from the front end with `request.args()`.
+
+Most of the code in this function is similiar in structure to the tile flipping in the simple game loop, with a few key differences. The return statements use the `jsonify` function to return data to the front end, ensuring that data is passed through in the correct JSON format. The availability of moves is checked at the end of the function because the contents of the board has changed after a valid move has been made. This also ensures that the user doesn't have to click again to see the latest update to the game condition. After a valid move both the board and the current player are stored to the session for use the next time the function is called. The game ends when the `check_all_moves()` function returns False for both light and dark as neither player can make a valid move. If one colour has no valid moves and its currently that colours turn, the player is swapped again so that the game can continue when one player doesn't have any valid moves.
+
+### save_game function
+
+---
+
+![save_game](./flowcharts/save_game.png)
+
+This function is called when the user clicks on the save game button in the front end and it saves the variables `current_player` and `board` to a json file. This is important as it allows games to be saved, maintaining the current board state until the user loads the game. In the code I have first put both variables into a dictionary because this is a format that can easily be converted to json. Using the `with open()` command is significant as the file will be automatically closed after the data is saved to the file. This prevents issues with the file being left open from occuring.
+
+### load_game function
+
+---
+
+![load_game](./flowcharts/load_game.png)
+
+This function runs when the load game button is clicked in the front end, it loads the variables saved in the json file, converts them from json to be stored in a session and returns them to the front end. The same `with open()` command is used here to achieve the same purpose. The variables are updated in the session so they are accurate for when other app routes are called.
+
 ## Changes made to index.html
+
+I have made a few changes to the index.html file provided in the specification to implement the AI move and save/load functions.
+
+I have modified the `sendMove(x, y, url)` function to include an additional `fetch(url+'?x=0&y=0')` command after the coord chosen by the user has been successful. This is so that the AI move will run after a successful move by the user. X and y have been returned as 0 here as these are not relevant for computing the AI's move but they have to be returned with this url regardless.
+
+Another 2 functions that had to be implemented are `saveGame()` and `loadGame()`. These provide functionality to the saving and loading buttons through an `onclick` attribute. Fetch methods are used to run the corresponding functions in python. The message box is then updated on the webpage to show that these processes have happened successfully. In `loadGame()`, the board is also updated using `loadBoard()` after a response from python
+to show the new board state.
 
 ---
 
