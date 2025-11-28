@@ -161,3 +161,5 @@ to show the new board state.
 ### License: MIT, see LICENSE.txt for more details
 
 ### Author: Harry Williams
+
+[![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/pylint-dev/pylint)
