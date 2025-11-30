@@ -2,6 +2,7 @@
 import random
 import json
 import time
+import logging
 from flask import Flask, request, render_template, jsonify, session
 import components
 
@@ -113,12 +114,17 @@ app = Flask(__name__)
 #creates secret key so sessions can be used
 app.secret_key = bytearray (random.randint(1,1000000))
 
+#set up logging
+logging.basicConfig( filename="gamelog.log", format ='%(asctime)s  %(message)s', filemode='w' )
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 @app.route('/')
 def start_game():
     '''Starts game for flask implementation of othello'''
     #initialises board
     board = components.initialise_board()
+    logger.info("Board initialised")
     current_player = "-Dark"
     #saves variables to current session so they can be used between app routes
     session["current_player"] = current_player
@@ -151,6 +157,7 @@ def process_move():
 
     # if space is taken move isn't valid
     if board[y][x] != "-None":
+        logging.info(f"Invalid Move at ({x},{y}) for {current_player}")
         return jsonify({ "status": "fail", "player": current_player, "message": "Tile already placed here"})
 
     #returns all valid directions for current coord
@@ -187,6 +194,7 @@ def process_move():
                 current_y += direction[1]
 
         current_player = player_swap(current_player)
+        logging.info(f"Player swap to {current_player}")
         #checks if there are any valid moves for both players
         moves_valid_light = check_all_moves("Light",board)
         moves_valid_dark = check_all_moves("-Dark",board)
@@ -205,21 +213,26 @@ def process_move():
             else:
                 winner = "Draw"
 
+            logging.info(f"Game finished, {winner} won")
             return jsonify({"finished":f"{winner} won, light tiles: {light_count}, dark tiles: {dark_count}","board":board})
 
-            #after swapping players, if the new player has no valid moves, swaps to other player
+        #after swapping players, if the new player has no valid moves, swaps to other player
         if (moves_valid_dark is False and current_player=="-Dark") or (moves_valid_light is False and current_player=="Light"):
             previous_player = current_player
             current_player = player_swap(current_player)
+            logging.info(f"Player swap to {current_player}")
             #updates session variable again as current player has changed
             session["current_player"] = current_player
+            logging.info(f"valid move at ({x},{y}) for {current_player}, no valid move for {previous_player}")
             return jsonify({"status":"success","player": current_player, "board":board,"message": f"no valid move for {previous_player}, {current_player} turn "})
 
         #move is valid with no other conditions
+        logging.info(f"valid move at ({x},{y}) for {current_player}")
         return jsonify( { "status": "success", "player": current_player, "board":board,"message":""} )
 
     #move is not valid
     else:
+        logging.info(f"Invalid Move at ({x},{y}) for {current_player}")
         return jsonify( { "status": "fail", "player": current_player, "message":""} )
 
 
@@ -238,7 +251,7 @@ def save_game():
     #opens json file and writes data dictionary to it
     with open("saved_game.json","w") as file:
         json.dump(data ,file)
-
+    logging.info("Game saved")
     return jsonify()
 
 
@@ -256,6 +269,7 @@ def load_game():
     #updates session variables
     session["current_player"] = current_player
     session["board"] = board
+    logging.info("Game loaded")
     return jsonify( {"game_board":board,"message":f"Its {current_player}'s turn."} )
 
 if __name__ == "__main__":
