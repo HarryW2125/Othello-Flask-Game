@@ -9,6 +9,14 @@ This project is a Flask implementation of the board game Othello, with an AI tha
 
 ## Usage
 
+The game against the AI can be played [here](harrywilliams.pythonanywhere.com) without needing to run the source code.
+
+With the source code, the flask AI game can be played by running `flask_game_engine.py` in Stage 3 or `flask_game_engine_ai.py` in the repository. Whilst the file is running go to the localhost port [http://127.0.0.1:5000](http://127.0.0.1:5000) to play the game. This link should appear in the terminal when the file is run or can be accessed by simply following the link here.
+
+To play the command line version of the game, open and run the `game_engine.py` file found in Stage 1 or in the repository. The game can then be played with 2 players through the command line.
+
+For more information about dependancies, installations and libraries, read `manual.doc` which can be found in the same directory as this readme or the repository.
+
 ## Components Module
 
 This module has a series of functions that are essential to computing the core aspects of the game: initialising the board, printing the board and checking the validity of moves. This is needed as it provides the fundamental functionality needed to implement othello.
