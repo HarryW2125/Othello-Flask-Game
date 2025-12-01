@@ -168,6 +168,6 @@ to show the new board state.
 
 ---
 
-### License: MIT, see LICENSE.txt for more details
+### License: MIT, see LICENSE.txt  in this directory or the repository for more details
 
-### Author: Harry Williams
+### Author: Harry Williams - 750016639
