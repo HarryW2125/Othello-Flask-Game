@@ -95,6 +95,17 @@ board_full = [
     ["-Dark", "-Dark", "-Dark", "-Dark", "-Dark", "-Dark", "-Dark", "-Dark"]
 ]
 
+board_all_valid = [
+    ["Light", "-Dark", "-Dark", "Light", "-Dark", "-Dark", "Light", "-Dark"],
+    ["-Dark", "-Dark", "-Dark", "-Dark", "-Dark", "-Dark", "-Dark", "-Dark"],
+    ["-Dark", "-Dark", "-Dark", "-Dark", "-Dark", "-Dark", "-Dark", "-Dark"],
+    ["Light", "-Dark", "-Dark", "-None", "-Dark", "-Dark", "-Dark", "Light"],
+    ["-Dark", "-Dark", "-Dark", "-Dark", "-Dark", "-Dark", "-Dark", "-Dark"],
+    ["-Dark", "-Dark", "-Dark", "-Dark", "-Dark", "-Dark", "-Dark", "-Dark"],
+    ["Light", "-Dark", "-Dark", "-Dark", "-Dark", "-Dark", "-Dark", "-Dark"],
+    ["-Dark", "-Dark", "-Dark", "Light", "-Dark", "-Dark", "-Dark", "Light"]
+]
+
 #NORMAL TESTS
 def test_normal_move_dark():
     assert components.legal_move("-Dark",(3,2),board_8x8) == (True, [(0,1)]) #normal valid test for dark
@@ -115,9 +126,16 @@ def test_one_valid_black():
 def test_one_valid_light():
     assert components.legal_move("Light",(7,0),board_one_valid_light) == (True, [(-1,0)]) #edge case for valid light - only one legal move
 
+def test_all_directions_valid():
+    #edge case where all directions are valid
+    assert components.legal_move("Light",(3,3),board_all_valid) == (True, [(0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-1, 0), (-1, 1)])
+
 #EDGE CASES FOR INVALID MOVES
 def test_board_full_dark():
     assert components.legal_move("-Dark",(0,0),board_full) == (False, None) #edge case for invalid dark - no empty tiles
 
 def test_board_full_light():
     assert components.legal_move("Light",(0,0),board_full) == (False, None) #edge case for invalid light - no empty tiles
+
+def test_off_board():
+    assert components.legal_move("Light",(9,9),board_8x8) == (False, None) # edge case for coord entered off the board
