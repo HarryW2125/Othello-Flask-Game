@@ -56,10 +56,15 @@ def legal_move(colour,coord,board):
 
     else:
         opposite_colour = "Light"
-
-    # if coord is not empty then a tile cannot be placed
-    if board[y][x] != "-None":
-        return False, None
+    
+    try:
+        # if coord is not empty then a tile cannot be placed
+        if board[y][x] != "-None":
+            return False, None
+    
+    #if x and y are out of range of the board
+    except IndexError:
+        return False,None
 
     #contains all directions that neighbor around the chosen coord
     direction_arr= [
