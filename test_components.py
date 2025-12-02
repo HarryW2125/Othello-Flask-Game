@@ -113,10 +113,10 @@ def test_normal_move_dark():
 def test_normal_move_light():
     assert components.legal_move("Light",(3,5),board_8x8) == (True, [(0,-1)]) #normal valid test for light
 
-def test_invalid_dark():
+def test_normal_invalid_dark():
     assert components.legal_move("-Dark",(0,0),board_8x8) == (False, None) #normal invalid test for dark
 
-def test_invalid_light():
+def test_normal_invalid_light():
     assert components.legal_move("Light",(0,0),board_8x8) == (False, None) #normal invalid test for light
 
 #EDGE CASES FOR VALID MOVES
