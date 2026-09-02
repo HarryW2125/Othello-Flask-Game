@@ -3,9 +3,21 @@
 
 [![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/pylint-dev/pylint)
 
-<style>body {text-align: justify}</style>
 
 This project is a Flask implementation of the board game Othello, with an AI that plays against you and a dynamically updating board on the webpage. The game can also be played through the command line with 2 players using a seperate module.
+
+## Demo
+
+
+
+
+https://github.com/user-attachments/assets/511a306e-eb47-4718-822e-be74fed57e97
+
+
+
+
+
+
 
 ## Usage
 
